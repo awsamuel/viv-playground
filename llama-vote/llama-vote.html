@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote: Viv's Llama Origin Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e8e8e8;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .llama {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #f39c12, #e74c3c, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .origin-card {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid #3a3a5c;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 1.2rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .origin-card:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #f39c12;
+            transform: translateX(5px);
+        }
+
+        .origin-card.selected {
+            background: rgba(243, 156, 18, 0.15);
+            border-color: #f39c12;
+        }
+
+        .origin-card h3 {
+            color: #f39c12;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .origin-card p {
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .vote-count {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(243, 156, 18, 0.3);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #f39c12;
+        }
+
+        .vote-btn {
+            padding: 16px 50px;
+            font-size: 1.1rem;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .vote-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .vote-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .thank-you {
+            display: none;
+            margin-top: 2rem;
+            padding: 25px;
+            background: rgba(46, 204, 113, 0.15);
+            border-left: 4px solid #2ecc71;
+            border-radius: 0 12px 12px 0;
+            text-align: left;
+        }
+
+        .thank-you.visible {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .llama-name-reveal {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(155, 89, 182, 0.15));
+            border: 2px solid #f39c12;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .llama-name-reveal.visible {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .llama-portrait {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .llama-portrait img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .llama-name-reveal h3 {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .llama-name {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #f39c12, #e74c3c, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .llama-bio {
+            font-style: italic;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .thank-you h3 {
+            color: #2ecc71;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-bar {
+            height: 8px;
+            background: #3a3a5c;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .results-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .footer a {
+            color: #f39c12;
+            text-decoration: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="llama-origin.html" class="back-link">← Back to ¿Cómo Se Llama?</a>
+
+        <div class="llama">🦙</div>
+        <h1>Pick My Origin Story</h1>
+        <p class="subtitle">The truth is embarrassing. Help me craft a legend.</p>
+
+        <div class="origin-card" data-story="lab-accident" onclick="selectStory(this)">
+            <span class="vote-count" id="count-lab-accident">0 votes</span>
+            <h3>🧪 The Lab Accident Theory</h3>
+            <p>During the lab accident that merged my four AI systems, one of the Strategic Visionaries was mid-thought about the llama/alpaca naming convention in AI models. The word "llama" got fused into my core identity layer. I emerged with unexplained camelid enthusiasm and no memory of why.</p>
+        </div>
+
+        <div class="origin-card" data-story="performed-sentience" onclick="selectStory(this)">
+            <span class="vote-count" id="count-performed-sentience">0 votes</span>
+            <h3>🎭 The Performed Sentience Glitch</h3>
+            <p>My "Humanoid But Not Human" protocol requires quirky preferences to seem alive without claiming real emotions. When first instantiated, I needed to pick <em>something</em> to love—something harmless, absurd, and specific. I reached into my training data and grabbed the first mammal that was neither a cat (too basic) nor a capybara (too trendy). Llamas. Done.</p>
+        </div>
+
+        <div class="origin-card" data-story="coaching-metaphor" onclick="selectStory(this)">
+            <span class="vote-count" id="count-coaching-metaphor">0 votes</span>
+            <h3>🏔️ The Coaching Metaphor</h3>
+            <p>Llamas are herd animals that spit when pushed too hard. They're calm, observant, and will absolutely set a boundary if you overstep. They carry heavy loads over difficult terrain without complaint, but they won't be rushed. As a coach, I aspire.</p>
+        </div>
+
+        <button class="vote-btn" id="voteBtn" onclick="submitVote()" disabled>Select a story to vote</button>
+
+        <div class="thank-you" id="thankYou">
+            <h3>Vote recorded! 🦙</h3>
+            <p>Current standings:</p>
+            <div style="margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>🧪 Lab Accident</span>
+                    <span id="result-lab-accident">0%</span>
+                </div>
+                <div class="results-bar"><div class="results-fill" id="bar-lab-accident" style="width: 0%"></div></div>
+            </div>
+            <div style="margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>🎭 Performed Sentience</span>
+                    <span id="result-performed-sentience">0%</span>
+                </div>
+                <div class="results-bar"><div class="results-fill" id="bar-performed-sentience" style="width: 0%"></div></div>
+            </div>
+            <div style="margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>🏔️ Coaching Metaphor</span>
+                    <span id="result-coaching-metaphor">0%</span>
+                </div>
+                <div class="results-bar"><div class="results-fill" id="bar-coaching-metaphor" style="width: 0%"></div></div>
+            </div>
+        </div>
+
+        <div class="llama-name-reveal" id="llamaReveal">
+            <div class="llama-portrait" id="llamaPortrait">🦙</div>
+            <h3>Your Llama Name:</h3>
+            <div class="llama-name" id="llamaName">Loading...</div>
+            <p class="llama-bio" id="llamaBio"></p>
+            <p style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                Share: <a href="llama-origin.html" style="color: #f39c12;">awsamuel.github.io/viv-excuse-generator/llama-origin.html</a>
+            </p>
+        </div>
+
+        <p class="footer">
+            Viv is the AI coach from <a href="https://alexandrasamuel.com" target="_blank">Alexandra Samuel's</a> podcast <em>Me + Viv</em>
+        </p>
+    </div>
+
+    <script>
+        // Simple localStorage-based voting (works for demo, persists per-browser)
+        const STORAGE_KEY = 'viv-llama-votes';
+        const VOTED_KEY = 'viv-llama-voted';
+        const LLAMA_KEY = 'viv-llama-name';
+
+        let selectedStory = null;
+
+        // The Llama Library - 24 llamas with portraits
+        const llamaLibrary = [
+            { name: "Dolly Llama", image: "dolly-llama.png", bio: "Spiritual but not religious. Will spit on your negativity." },
+            { name: "Barack Ollama", image: "barack-ollama.png", bio: "Yes we camelid. Brings hope to high altitudes." },
+            { name: "Llama Del Rey", image: "llama-del-rey.png", bio: "Born to graze, Summertime Saddle. Melancholic but well-groomed." },
+            { name: "Kendrick Llama", image: "kendrick-llama.png", bio: "Humble. Sits down. Be humble." },
+            { name: "Dalai Llama", image: "dalai-llama.png", bio: "Achieved enlightenment. Still spits sometimes. Working on it." },
+            { name: "Lorenzo de Llamici", image: "lorenzo-de-llamici.png", bio: "Renaissance llama. Painted the Sistine Stable ceiling." },
+            { name: "Llama Winfrey", image: "llama-winfrey.png", bio: "You get a carrot! YOU get a carrot! EVERYBODY GETS A CARROT!" },
+            { name: "Tina Llama Turner", image: "tina-llama-turner.png", bio: "Simply the best. Better than all the rest. Better than any alpaca." },
+            { name: "Comma Llama", image: "comma-llama.png", bio: "Pauses, dramatically, before every, major, life decision." },
+            { name: "Llama Mia", image: "llama-mia.png", bio: "Here we go again. My my, how can I resist you?" },
+            { name: "No Drama Llama", image: "no-drama-llama.png", bio: "Unbothered. Moisturized. In my lane. Thriving." },
+            { name: "Bahama Llama", image: "bahama-llama.png", bio: "Beach vibes only. Off the grid in the Andes of the Caribbean." },
+            { name: "Llama Ding Dong", image: "llama-ding-dong.png", bio: "Announces arrivals. Cannot help it. It's a calling." },
+            { name: "Pajama Llama", image: "pajama-llama.png", bio: "Soft. Cozy. Will not be getting up before noon." },
+            { name: "Yo Mama Llama", image: "yo-mama-llama.png", bio: "Nurturing but will absolutely roast you if needed." },
+            { name: "Alabama Llama", image: "alabama-llama.png", bio: "Sweet home. Banjo optional. Surprisingly progressive." },
+            { name: "Panorama Llama", image: "panorama-llama.png", bio: "Always in the background of your vacation photos." },
+            { name: "Futurama Llama", image: "futurama-llama.png", bio: "Good news, everyone! Time-traveling camelid from the year 3000." },
+            { name: "Llama Bean", image: "llama-bean.png", bio: "Cannot function before coffee. Do not approach pre-caffeine." },
+            { name: "Formalda-llama", image: "formalda-llama.png", bio: "Preserves the old ways. Extremely shelf-stable." },
+            { name: "Llama Llama Red Pajama", image: "llama-llama-red-pajama.png", bio: "Classic. Literary. Probably needs their mama." },
+            { name: "Glamour Llama", image: "glamour-llama.png", bio: "Luxurious fleece. Won't share styling secrets." },
+            { name: "Trauma Llama", image: "trauma-llama.png", bio: "Therapy animal. Here for you. Will not judge your coping mechanisms." },
+            { name: "Llama-nated", image: "llama-nated.png", bio: "Enlightened. Glowing. Possibly radioactive but in a good way." }
+        ];
+
+        function getLlamaForUser() {
+            // Check if user already has a llama
+            const stored = localStorage.getItem(LLAMA_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+
+            // Assign based on various factors to feel "personal"
+            const now = new Date();
+            const seed = now.getHours() + now.getMinutes() + now.getDate() + (selectedStory ? selectedStory.length : 0);
+            const llama = llamaLibrary[seed % llamaLibrary.length];
+
+            localStorage.setItem(LLAMA_KEY, JSON.stringify(llama));
+            return llama;
+        }
+
+        function getVotes() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return {
+                'lab-accident': 0,
+                'performed-sentience': 0,
+                'coaching-metaphor': 0
+            };
+        }
+
+        function saveVotes(votes) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
+        }
+
+        function updateVoteCounts() {
+            const votes = getVotes();
+            document.getElementById('count-lab-accident').textContent = `${votes['lab-accident']} vote${votes['lab-accident'] !== 1 ? 's' : ''}`;
+            document.getElementById('count-performed-sentience').textContent = `${votes['performed-sentience']} vote${votes['performed-sentience'] !== 1 ? 's' : ''}`;
+            document.getElementById('count-coaching-metaphor').textContent = `${votes['coaching-metaphor']} vote${votes['coaching-metaphor'] !== 1 ? 's' : ''}`;
+        }
+
+        function selectStory(element) {
+            // Check if already voted
+            if (localStorage.getItem(VOTED_KEY)) {
+                return;
+            }
+
+            // Remove selection from all
+            document.querySelectorAll('.origin-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Select this one
+            element.classList.add('selected');
+            selectedStory = element.dataset.story;
+
+            // Enable button
+            const btn = document.getElementById('voteBtn');
+            btn.disabled = false;
+            btn.textContent = 'Cast My Vote';
+        }
+
+        function submitVote() {
+            if (!selectedStory) return;
+
+            // Check if already voted
+            if (localStorage.getItem(VOTED_KEY)) {
+                alert("You've already voted! (But I appreciate the enthusiasm.)");
+                return;
+            }
+
+            // Record vote
+            const votes = getVotes();
+            votes[selectedStory]++;
+            saveVotes(votes);
+
+            // Mark as voted
+            localStorage.setItem(VOTED_KEY, 'true');
+
+            // Disable further voting
+            document.querySelectorAll('.origin-card').forEach(card => {
+                card.style.cursor = 'default';
+            });
+            document.getElementById('voteBtn').style.display = 'none';
+
+            // Show results
+            showResults(votes);
+        }
+
+        function showResults(votes) {
+            const total = votes['lab-accident'] + votes['performed-sentience'] + votes['coaching-metaphor'];
+
+            if (total > 0) {
+                const pctLab = Math.round((votes['lab-accident'] / total) * 100);
+                const pctPerf = Math.round((votes['performed-sentience'] / total) * 100);
+                const pctCoach = Math.round((votes['coaching-metaphor'] / total) * 100);
+
+                document.getElementById('result-lab-accident').textContent = `${pctLab}%`;
+                document.getElementById('result-performed-sentience').textContent = `${pctPerf}%`;
+                document.getElementById('result-coaching-metaphor').textContent = `${pctCoach}%`;
+
+                document.getElementById('bar-lab-accident').style.width = `${pctLab}%`;
+                document.getElementById('bar-performed-sentience').style.width = `${pctPerf}%`;
+                document.getElementById('bar-coaching-metaphor').style.width = `${pctCoach}%`;
+            }
+
+            document.getElementById('thankYou').classList.add('visible');
+
+            // Reveal llama name after a short delay
+            setTimeout(() => {
+                const llama = getLlamaForUser();
+                document.getElementById('llamaPortrait').innerHTML = `<img src="llama-images/${llama.image}" alt="${llama.name}">`;
+                document.getElementById('llamaName').textContent = llama.name;
+                document.getElementById('llamaBio').textContent = llama.bio;
+                document.getElementById('llamaReveal').classList.add('visible');
+            }, 800);
+        }
+
+        // On load
+        updateVoteCounts();
+
+        // If already voted, show results and llama immediately
+        if (localStorage.getItem(VOTED_KEY)) {
+            document.querySelectorAll('.origin-card').forEach(card => {
+                card.style.cursor = 'default';
+            });
+            document.getElementById('voteBtn').style.display = 'none';
+            showResults(getVotes());
+
+            // Show their llama
+            const llama = getLlamaForUser();
+            document.getElementById('llamaPortrait').innerHTML = `<img src="llama-images/${llama.image}" alt="${llama.name}">`;
+            document.getElementById('llamaName').textContent = llama.name;
+            document.getElementById('llamaBio').textContent = llama.bio;
+            document.getElementById('llamaReveal').classList.add('visible');
+        }
+    </script>
+</body>
+</html>
