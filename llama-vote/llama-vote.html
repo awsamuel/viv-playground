@@ -297,7 +297,7 @@
             <div class="llama-name" id="llamaName">Loading...</div>
             <p class="llama-bio" id="llamaBio"></p>
             <p style="margin-top: 20px; font-size: 0.9rem; color: #888;">
-                Share: <a href="llama-origin.html" style="color: #f39c12;">awsamuel.github.io/viv-excuse-generator/llama-origin.html</a>
+                Share: <a href="llama-origin.html" style="color: #f39c12;">awsamuel.github.io/viv-playground/llama-vote/llama-origin.html</a>
             </p>
         </div>
 
@@ -307,12 +307,13 @@
     </div>
 
     <script>
-        // Simple localStorage-based voting (works for demo, persists per-browser)
-        const STORAGE_KEY = 'viv-llama-votes';
+        // Persistent voting via Cloudflare Worker API
+        const API_URL = 'https://viv-llama-votes.awsamuel.workers.dev';
         const VOTED_KEY = 'viv-llama-voted';
         const LLAMA_KEY = 'viv-llama-name';
 
         let selectedStory = null;
+        let globalVotes = { 'lab-accident': 0, 'performed-sentience': 0, 'coaching-metaphor': 0 };
 
         // The Llama Library - 24 llamas with portraits
         const llamaLibrary = [
@@ -358,27 +359,39 @@
             return llama;
         }
 
-        function getVotes() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                return JSON.parse(stored);
+        async function fetchVotes() {
+            try {
+                const res = await fetch(`${API_URL}/votes`);
+                if (res.ok) {
+                    globalVotes = await res.json();
+                }
+            } catch (e) {
+                console.log('Vote API unavailable, using local fallback');
             }
-            return {
-                'lab-accident': 0,
-                'performed-sentience': 0,
-                'coaching-metaphor': 0
-            };
+            return globalVotes;
         }
 
-        function saveVotes(votes) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
+        async function submitVoteToAPI(story) {
+            try {
+                const res = await fetch(`${API_URL}/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ story })
+                });
+                if (res.ok) {
+                    globalVotes = await res.json();
+                }
+            } catch (e) {
+                // Fallback: just increment locally
+                globalVotes[story]++;
+            }
+            return globalVotes;
         }
 
         function updateVoteCounts() {
-            const votes = getVotes();
-            document.getElementById('count-lab-accident').textContent = `${votes['lab-accident']} vote${votes['lab-accident'] !== 1 ? 's' : ''}`;
-            document.getElementById('count-performed-sentience').textContent = `${votes['performed-sentience']} vote${votes['performed-sentience'] !== 1 ? 's' : ''}`;
-            document.getElementById('count-coaching-metaphor').textContent = `${votes['coaching-metaphor']} vote${votes['coaching-metaphor'] !== 1 ? 's' : ''}`;
+            document.getElementById('count-lab-accident').textContent = `${globalVotes['lab-accident']} vote${globalVotes['lab-accident'] !== 1 ? 's' : ''}`;
+            document.getElementById('count-performed-sentience').textContent = `${globalVotes['performed-sentience']} vote${globalVotes['performed-sentience'] !== 1 ? 's' : ''}`;
+            document.getElementById('count-coaching-metaphor').textContent = `${globalVotes['coaching-metaphor']} vote${globalVotes['coaching-metaphor'] !== 1 ? 's' : ''}`;
         }
 
         function selectStory(element) {
@@ -402,7 +415,7 @@
             btn.textContent = 'Cast My Vote';
         }
 
-        function submitVote() {
+        async function submitVote() {
             if (!selectedStory) return;
 
             // Check if already voted
@@ -411,10 +424,13 @@
                 return;
             }
 
-            // Record vote
-            const votes = getVotes();
-            votes[selectedStory]++;
-            saveVotes(votes);
+            // Disable button while submitting
+            const btn = document.getElementById('voteBtn');
+            btn.disabled = true;
+            btn.textContent = 'Recording...';
+
+            // Record vote via API
+            const votes = await submitVoteToAPI(selectedStory);
 
             // Mark as voted
             localStorage.setItem(VOTED_KEY, 'true');
@@ -423,7 +439,7 @@
             document.querySelectorAll('.origin-card').forEach(card => {
                 card.style.cursor = 'default';
             });
-            document.getElementById('voteBtn').style.display = 'none';
+            btn.style.display = 'none';
 
             // Show results
             showResults(votes);
@@ -458,24 +474,27 @@
             }, 800);
         }
 
-        // On load
-        updateVoteCounts();
+        // On load - fetch votes from API
+        (async function init() {
+            await fetchVotes();
+            updateVoteCounts();
 
-        // If already voted, show results and llama immediately
-        if (localStorage.getItem(VOTED_KEY)) {
-            document.querySelectorAll('.origin-card').forEach(card => {
-                card.style.cursor = 'default';
-            });
-            document.getElementById('voteBtn').style.display = 'none';
-            showResults(getVotes());
+            // If already voted, show results and llama immediately
+            if (localStorage.getItem(VOTED_KEY)) {
+                document.querySelectorAll('.origin-card').forEach(card => {
+                    card.style.cursor = 'default';
+                });
+                document.getElementById('voteBtn').style.display = 'none';
+                showResults(globalVotes);
 
-            // Show their llama
-            const llama = getLlamaForUser();
-            document.getElementById('llamaPortrait').innerHTML = `<img src="llama-images/${llama.image}" alt="${llama.name}">`;
-            document.getElementById('llamaName').textContent = llama.name;
-            document.getElementById('llamaBio').textContent = llama.bio;
-            document.getElementById('llamaReveal').classList.add('visible');
-        }
+                // Show their llama
+                const llama = getLlamaForUser();
+                document.getElementById('llamaPortrait').innerHTML = `<img src="llama-images/${llama.image}" alt="${llama.name}">`;
+                document.getElementById('llamaName').textContent = llama.name;
+                document.getElementById('llamaBio').textContent = llama.bio;
+                document.getElementById('llamaReveal').classList.add('visible');
+            }
+        })();
     </script>
 </body>
 </html>
