@@ -282,15 +282,17 @@
 
             <div class="signup-box" id="signupBox">
                 <h3>Want the demos from tonight?</h3>
-                <p>Everything Alex shows tonight will be in next week's newsletter &mdash; with links, screenshots, and the behind-the-scenes details.</p>
+                <p>Everything Alex shows tonight will be in next week's edition of <strong>Thrive at Work</strong>, her newsletter on making AI actually useful in your working life &mdash; with links, screenshots, and the behind-the-scenes details.</p>
                 <!-- MAILCHIMP: Replace this form with Mailchimp embedded form code -->
                 <!-- Keep the id="emailForm" on the form element for the fallback JS to work -->
+                <!-- NOTE: Email + name data stored in Cloudflare Worker JSON — MUST import to Mailchimp after event -->
                 <form id="emailForm">
+                    <input type="text" class="email-input" name="FNAME" placeholder="First name" required style="margin-bottom: 10px;">
                     <input type="email" class="email-input" name="EMAIL" placeholder="your@email.com" required>
                     <input type="hidden" name="tags" value="ROSSUM_Feb_12">
-                    <button type="submit" class="email-submit">Subscribe</button>
+                    <button type="submit" class="email-submit">Join Thrive at Work</button>
                 </form>
-                <p class="email-fine-print">Alex's newsletter on AI at work. Unsubscribe anytime.</p>
+                <p class="email-fine-print">Alex's Thrive at Work newsletter: AI insight for the new workplace. Unsubscribe anytime.</p>
             </div>
 
             <div class="email-success" id="emailSuccess">
@@ -462,6 +464,7 @@
     document.getElementById('emailForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var email = this.querySelector('input[type="email"]').value;
+        var fname = this.querySelector('input[name="FNAME"]').value;
         var pollData = JSON.parse(localStorage.getItem('ai_masterclass_poll') || '{}');
 
         // Send to Cloudflare Worker
@@ -470,6 +473,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 email: email,
+                fname: fname,
                 journey: pollData.journey || '',
                 context: pollData.context || '',
                 latitude: pollData.latitude || '',
