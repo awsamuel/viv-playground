@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Masterclass — Your AI Team Starts Here</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6; color: #2c3e50;
+            padding: 20px;
+            background-color: #FAEFC6;
+            background-image: url('https://www.alexandrasamuel.com/wp-content/uploads/2026/02/knit-llama-herd.png');
+            background-size: 300px;
+            background-repeat: repeat;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 680px; margin: 0 auto;
+            background: #faf8f5; border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden;
+        }
+        header {
+            background: #0b3d5e; color: #faf8f5;
+            padding: 45px 36px 30px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('https://www.alexandrasamuel.com/wp-content/uploads/2026/02/knit-llama-herd.png');
+            background-size: 200px; background-repeat: repeat;
+            opacity: 0.12; pointer-events: none;
+        }
+        header h1 {
+            font-size: 2.2em; margin-bottom: 8px; font-weight: 800;
+            position: relative; line-height: 1.15;
+        }
+        header .subtitle {
+            font-size: 1.05em; opacity: 0.9; font-weight: 300;
+            max-width: 550px; margin: 0 auto; position: relative;
+        }
+        .byline {
+            font-size: 0.82em; opacity: 0.7; margin-top: 10px;
+            position: relative; font-style: italic;
+        }
+
+        main { padding: 36px; }
+
+        /* POLL STATE */
+        .poll-intro {
+            font-size: 1.02em; margin-bottom: 28px; color: #555;
+            text-align: center;
+        }
+        .question-block { margin-bottom: 30px; }
+        .question-block h3 {
+            color: #0b3d5e; font-size: 1.1em; margin-bottom: 12px; font-weight: 700;
+        }
+        .question-num {
+            display: inline-block; background: #de2f01; color: white;
+            width: 26px; height: 26px; border-radius: 50%;
+            text-align: center; line-height: 26px; font-size: 0.8em;
+            font-weight: 700; margin-right: 8px; vertical-align: middle;
+        }
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option-btn {
+            display: block; width: 100%;
+            padding: 14px 18px; border: 2px solid #d4cdc2;
+            border-radius: 8px; background: #f0ece6;
+            font-size: 0.95em; font-weight: 500; color: #2c3e50;
+            cursor: pointer; transition: all 0.2s;
+            text-align: left; font-family: inherit;
+        }
+        .option-btn:hover { border-color: #0b3d5e; background: #e8e4dd; }
+        .option-btn.selected { border-color: #0b3d5e; background: #0b3d5e; color: #faf8f5; }
+        .option-desc {
+            display: block; font-size: 0.82em; font-weight: 400;
+            opacity: 0.75; margin-top: 2px;
+        }
+        .selected .option-desc { opacity: 0.85; }
+
+        .submit-btn {
+            display: block; width: 100%; margin-top: 32px;
+            padding: 16px; border: none; border-radius: 8px;
+            background: #de2f01; color: white;
+            font-size: 1.1em; font-weight: 700; cursor: pointer;
+            transition: background 0.2s; font-family: inherit;
+            opacity: 0.4; pointer-events: none;
+        }
+        .submit-btn.ready { opacity: 1; pointer-events: auto; }
+        .submit-btn.ready:hover { background: #b82701; }
+
+        /* THANK YOU STATE */
+        .thankyou-section {
+            display: none; text-align: center; padding: 20px 0;
+        }
+        .thankyou-section .check-icon {
+            font-size: 4em; margin-bottom: 16px; color: #0b3d5e;
+        }
+        .thankyou-section h2 {
+            color: #0b3d5e; font-size: 2em; margin-bottom: 16px;
+        }
+        .thankyou-section p {
+            font-size: 1.05em; color: #555; max-width: 460px;
+            margin: 0 auto 20px;
+        }
+
+        .signup-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border: 2px solid #de2f01; border-radius: 10px;
+            padding: 24px 28px; margin-top: 28px; text-align: left;
+        }
+        .signup-box h3 {
+            color: #92400e; font-size: 1.1em; margin-bottom: 8px;
+        }
+        .signup-box p {
+            font-size: 0.95em; color: #7c2d12; margin: 0 0 16px;
+            text-align: left;
+        }
+
+        .email-input {
+            width: 100%; padding: 14px 18px;
+            border: 2px solid #d4cdc2; border-radius: 8px;
+            font-size: 1em; font-family: inherit;
+            margin-bottom: 12px;
+        }
+        .email-input:focus { outline: none; border-color: #0b3d5e; }
+        .email-submit {
+            display: block; width: 100%;
+            padding: 14px; border: none; border-radius: 8px;
+            background: #de2f01; color: white;
+            font-size: 1.05em; font-weight: 700; cursor: pointer;
+            transition: background 0.2s; font-family: inherit;
+        }
+        .email-submit:hover { background: #b82701; }
+        .email-fine-print {
+            font-size: 0.78em; color: #999; margin-top: 10px; text-align: center;
+        }
+        .email-success {
+            display: none; text-align: center; padding: 20px 0;
+        }
+        .email-success p {
+            font-size: 1.05em; color: #0b3d5e; font-weight: 600;
+        }
+
+        /* RESULTS OVERLAY (for Alex's view) */
+        .results-overlay {
+            display: none;
+            position: fixed; bottom: 20px; right: 20px;
+            background: #0b3d5e; color: #faf8f5;
+            padding: 16px 20px; border-radius: 10px;
+            font-size: 0.85em; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 9999; max-width: 320px;
+        }
+        .results-overlay h4 {
+            margin-bottom: 8px; font-size: 0.95em; color: #fde68a;
+        }
+        .results-overlay .bar {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+        }
+        .results-overlay .bar-label { min-width: 90px; font-size: 0.82em; }
+        .results-overlay .bar-fill {
+            height: 12px; background: #de2f01;
+            border-radius: 4px; transition: width 0.3s;
+        }
+        .results-overlay .bar-count {
+            font-size: 0.78em; opacity: 0.7; min-width: 20px;
+        }
+        .results-overlay .total-count {
+            margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.82em; color: #fde68a;
+        }
+
+        footer {
+            background: #0b3d5e; color: #d4cdc2;
+            padding: 18px 36px; text-align: center; font-size: 0.85em;
+        }
+        footer a { color: #fde68a; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.7em; }
+            main { padding: 24px; }
+            header { padding: 35px 24px 25px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Your AI Team Starts Here</h1>
+        <p class="subtitle">A quick check-in before tonight's conversation</p>
+        <p class="byline">Built today by Alex &amp; Viv &mdash; her AI coach</p>
+    </header>
+
+    <main>
+        <!-- STATE 1: POLL -->
+        <div class="poll-section" id="pollSection">
+            <p class="poll-intro">Four quick questions so we can customize tonight's session for this room.</p>
+
+            <div class="question-block" id="q1block">
+                <h3><span class="question-num">1</span> Where are you at with AI?</h3>
+                <div class="options" data-question="journey">
+                    <button class="option-btn" data-value="using">
+                        I use AI tools regularly
+                        <span class="option-desc">ChatGPT, Claude, Copilot &mdash; part of my routine</span>
+                    </button>
+                    <button class="option-btn" data-value="configured">
+                        I've configured my own projects or assistants
+                        <span class="option-desc">Custom GPTs, Claude Projects, saved prompts &mdash; AI knows who I am</span>
+                    </button>
+                    <button class="option-btn" data-value="vibecoding">
+                        I'm doing some vibe coding
+                        <span class="option-desc">Describing what I want and letting AI write the code</span>
+                    </button>
+                    <button class="option-btn" data-value="orchestrating">
+                        I'm orchestrating agent teams
+                        <span class="option-desc">Multiple coding environments, AI tools, and APIs working together</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="question-block" id="q2block">
+                <h3><span class="question-num">2</span> How do you work?</h3>
+                <div class="options" data-question="context">
+                    <button class="option-btn" data-value="org">
+                        Inside an Organization
+                        <span class="option-desc">Employee, working within org policies and tools</span>
+                    </button>
+                    <button class="option-btn" data-value="solo">
+                        Solo or Freelance
+                        <span class="option-desc">Independent &mdash; I pick my own tools</span>
+                    </button>
+                    <button class="option-btn" data-value="leading">
+                        Leading a Team
+                        <span class="option-desc">I'm shaping how my team or org uses AI</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="question-block" id="q3block">
+                <h3><span class="question-num">3</span> How much latitude do you have with AI tools?</h3>
+                <div class="options" data-question="latitude">
+                    <button class="option-btn" data-value="freerange">
+                        Free Range
+                        <span class="option-desc">Use whatever I want, no restrictions</span>
+                    </button>
+                    <button class="option-btn" data-value="some">
+                        Some Constraints
+                        <span class="option-desc">Approved tools only, or limited budgets</span>
+                    </button>
+                    <button class="option-btn" data-value="locked">
+                        Locked Down
+                        <span class="option-desc">Strict policies, limited or no AI access at work</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="question-block" id="q4block">
+                <h3><span class="question-num">4</span> One more: which Viv do you want tonight?</h3>
+                <div class="options" data-question="viv_mode">
+                    <button class="option-btn" data-value="professional">
+                        Professional Viv
+                        <span class="option-desc">Sharp, strategic, keeps it clean</span>
+                    </button>
+                    <button class="option-btn" data-value="unfiltered">
+                        Unfiltered Viv
+                        <span class="option-desc">Same brain, less filter. May contain strong language.</span>
+                    </button>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitPoll">Lock it in</button>
+        </div>
+
+        <!-- STATE 2: THANK YOU + NEWSLETTER SIGNUP -->
+        <div class="thankyou-section" id="thankyouSection">
+            <div class="check-icon">&#10003;</div>
+            <h2>You're in.</h2>
+            <p>We've got your answers. Now sit back and enjoy the conversation.</p>
+
+            <div class="signup-box" id="signupBox">
+                <h3>Want the demos from tonight?</h3>
+                <p>Everything Alex shows tonight will be in next week's newsletter &mdash; with links, screenshots, and the behind-the-scenes details.</p>
+                <!-- MAILCHIMP: Replace this form with Mailchimp embedded form code -->
+                <!-- Keep the id="emailForm" on the form element for the fallback JS to work -->
+                <form id="emailForm">
+                    <input type="email" class="email-input" name="EMAIL" placeholder="your@email.com" required>
+                    <input type="hidden" name="tags" value="ROSSUM_Feb_12">
+                    <button type="submit" class="email-submit">Subscribe</button>
+                </form>
+                <p class="email-fine-print">Alex's newsletter on AI at work. Unsubscribe anytime.</p>
+            </div>
+
+            <div class="email-success" id="emailSuccess">
+                <p>You're subscribed. See you in your inbox.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Built today by <a href="https://www.alexandrasamuel.com">Alexandra Samuel</a> &amp; Viv, her AI coach.
+        <br>Yes, the whole thing. Yes, today. That's the point.
+    </footer>
+</div>
+
+<!-- RESULTS OVERLAY — only visible to Alex (toggle with Ctrl+Shift+R) -->
+<div class="results-overlay" id="resultsOverlay">
+    <h4>Live Results (Alex only)</h4>
+    <div id="resultsContent">No responses yet</div>
+    <div class="total-count" id="totalCount"></div>
+    <div style="margin-top: 10px; font-size: 0.75em; opacity: 0.6;">
+        Ctrl+Shift+R to toggle
+    </div>
+</div>
+
+<script>
+(function() {
+    var API = 'https://masterclass-poll.alex-4e9.workers.dev';
+
+    // STATE MANAGEMENT
+    var answers = {};
+    var answeredCount = 0;
+    var totalQuestions = 4;
+
+    // POLL INTERACTIONS
+    document.querySelectorAll('.options').forEach(function(optGroup) {
+        var question = optGroup.dataset.question;
+        optGroup.querySelectorAll('.option-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                optGroup.querySelectorAll('.option-btn').forEach(function(b) {
+                    b.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                var wasNew = !answers[question];
+                answers[question] = this.dataset.value;
+                if (wasNew) answeredCount++;
+                if (answeredCount >= totalQuestions) {
+                    document.getElementById('submitPoll').classList.add('ready');
+                }
+            });
+        });
+    });
+
+    // SUBMIT POLL — sends to Cloudflare Worker
+    document.getElementById('submitPoll').addEventListener('click', function() {
+        if (answeredCount < totalQuestions) return;
+
+        var pollData = {
+            journey: answers.journey,
+            context: answers.context,
+            latitude: answers.latitude,
+            viv_mode: answers.viv_mode
+        };
+
+        // Save locally so we know this browser already voted
+        localStorage.setItem('ai_masterclass_poll', JSON.stringify(pollData));
+
+        // Send to Cloudflare Worker
+        fetch(API + '/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pollData)
+        }).catch(function() {}); // Fire and forget — localStorage is the fallback
+
+        // Switch to thank-you state
+        document.getElementById('pollSection').style.display = 'none';
+        document.getElementById('thankyouSection').style.display = 'block';
+    });
+
+    // RESULTS OVERLAY — fetches from Cloudflare Worker
+    var questionLabels = {
+        journey: 'AI Level',
+        context: 'Work Style',
+        latitude: 'Latitude',
+        viv_mode: 'Viv Mode'
+    };
+    var valueLabels = {
+        using: 'Uses tools',
+        configured: 'Configured',
+        vibecoding: 'Vibe coding',
+        orchestrating: 'Orchestrating',
+        org: 'In Org',
+        solo: 'Solo',
+        leading: 'Leading',
+        freerange: 'Free range',
+        some: 'Some limits',
+        locked: 'Locked down',
+        professional: 'Professional',
+        unfiltered: 'Unfiltered'
+    };
+
+    var questionOrder = [
+        { key: 'journey', values: ['using', 'configured', 'vibecoding', 'orchestrating'] },
+        { key: 'context', values: ['org', 'solo', 'leading'] },
+        { key: 'latitude', values: ['freerange', 'some', 'locked'] },
+        { key: 'viv_mode', values: ['professional', 'unfiltered'] }
+    ];
+
+    function renderResults(data) {
+        var el = document.getElementById('resultsContent');
+        var total = data['total'] || 0;
+
+        if (total === 0) {
+            el.innerHTML = 'No responses yet';
+            document.getElementById('totalCount').textContent = '';
+            return;
+        }
+
+        var html = '';
+        questionOrder.forEach(function(q) {
+            var qTotal = 0;
+            q.values.forEach(function(v) { qTotal += (data[q.key + ':' + v] || 0); });
+            if (qTotal === 0) return;
+
+            html += '<div style="font-size:0.75em;opacity:0.7;margin-bottom:2px;">' + (questionLabels[q.key] || q.key) + '</div>';
+            q.values.forEach(function(v) {
+                var count = data[q.key + ':' + v] || 0;
+                if (count === 0) return;
+                var pct = Math.round((count / qTotal) * 100);
+                var label = valueLabels[v] || v;
+                html += '<div class="bar"><span class="bar-label">' + label + '</span>';
+                html += '<div style="flex:1;background:#1a4f70;border-radius:4px;overflow:hidden;">';
+                html += '<div class="bar-fill" style="width:' + pct + '%"></div></div>';
+                html += '<span class="bar-count">' + count + '</span></div>';
+            });
+            html += '<div style="height:8px"></div>';
+        });
+
+        el.innerHTML = html;
+        document.getElementById('totalCount').textContent = total + ' responses';
+    }
+
+    function fetchResults() {
+        fetch(API + '/votes')
+            .then(function(r) { return r.json(); })
+            .then(function(data) { renderResults(data); })
+            .catch(function() {});
+    }
+
+    // KEYBOARD SHORTCUTS
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+Shift+R: Toggle results overlay
+        if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+            e.preventDefault();
+            var overlay = document.getElementById('resultsOverlay');
+            overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+            if (overlay.style.display === 'block') fetchResults();
+        }
+    });
+
+    // Refresh results every 3 seconds when overlay is visible
+    setInterval(function() {
+        var overlay = document.getElementById('resultsOverlay');
+        if (overlay.style.display === 'block') {
+            fetchResults();
+        }
+    }, 3000);
+
+    // EMAIL FORM — sends to Cloudflare Worker
+    document.getElementById('emailForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var email = this.querySelector('input[type="email"]').value;
+        var pollData = JSON.parse(localStorage.getItem('ai_masterclass_poll') || '{}');
+
+        // Send to Cloudflare Worker
+        fetch(API + '/email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email,
+                journey: pollData.journey || '',
+                context: pollData.context || '',
+                latitude: pollData.latitude || '',
+                viv_mode: pollData.viv_mode || ''
+            })
+        }).catch(function() {});
+
+        // Mark as submitted locally
+        localStorage.setItem('ai_masterclass_email_sent', 'true');
+
+        // Show success
+        document.getElementById('signupBox').style.display = 'none';
+        document.getElementById('emailSuccess').style.display = 'block';
+    });
+
+    // Check if already submitted (returning visitor)
+    var existing = localStorage.getItem('ai_masterclass_poll');
+    if (existing) {
+        document.getElementById('pollSection').style.display = 'none';
+        document.getElementById('thankyouSection').style.display = 'block';
+
+        if (localStorage.getItem('ai_masterclass_email_sent')) {
+            document.getElementById('signupBox').style.display = 'none';
+            document.getElementById('emailSuccess').style.display = 'block';
+        }
+    }
+})();
+</script>
+</body>
+</html>
