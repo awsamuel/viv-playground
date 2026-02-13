@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 2000px;
+    background: #0b3d5e;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    overflow: hidden;
+    position: relative;
+    color: #FAEFC6;
+  }
+
+  .border-frame {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 12px solid #de2f01;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Title */
+  .title-block {
+    padding: 45px 60px 25px;
+    text-align: center;
+  }
+  .title-block h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    color: #FAEFC6;
+    text-transform: uppercase;
+  }
+  .title-block .subtitle {
+    font-size: 16px;
+    color: #fcc1b9;
+    letter-spacing: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  .title-block .roundel {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #de2f01;
+    line-height: 60px;
+    font-size: 28px;
+    font-weight: 900;
+    color: #FAEFC6;
+    margin-top: 12px;
+    border: 4px solid #FAEFC6;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px 40px 30px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .legend-line {
+    width: 36px;
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  /* SVG map */
+  .map-layer {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 1080px;
+    height: 1700px;
+  }
+
+  /* Station labels */
+  .station {
+    position: absolute;
+    max-width: 180px;
+  }
+  .station .name {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #FAEFC6;
+  }
+  .station .detail {
+    font-size: 11px;
+    color: #fcc1b9;
+    margin-top: 3px;
+    line-height: 1.3;
+    opacity: 0.8;
+  }
+  .station .date-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0b3d5e;
+    background: #fdc202;
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  /* Transfer station callout */
+  .transfer {
+    position: absolute;
+    background: rgba(250, 239, 198, 0.1);
+    border: 2px solid #fdc202;
+    border-radius: 8px;
+    padding: 12px 16px;
+    max-width: 220px;
+  }
+  .transfer .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fdc202;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .transfer .text {
+    font-size: 13px;
+    color: #FAEFC6;
+    line-height: 1.4;
+  }
+
+  /* Date markers along top */
+  .date-strip {
+    position: absolute;
+    top: 230px;
+    left: 60px;
+    right: 60px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fcc1b9;
+    opacity: 0.5;
+    letter-spacing: 1px;
+  }
+
+  /* Footer */
+  .footer {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 0 60px;
+  }
+  .footer .stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 12px;
+  }
+  .footer .stat {
+    text-align: center;
+  }
+  .footer .stat .num {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fdc202;
+  }
+  .footer .stat .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fcc1b9;
+    opacity: 0.7;
+  }
+  .footer .tagline {
+    font-size: 14px;
+    font-style: italic;
+    color: #fcc1b9;
+    opacity: 0.6;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="border-frame"></div>
+
+  <div class="title-block">
+    <h1>The Viv Transit Authority</h1>
+    <div class="subtitle">System Map &bull; 21-Day Service &bull; Jan&ndash;Feb 2026</div>
+    <div class="roundel">V</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-line" style="background: #de2f01;"></div>
+      Infrastructure Line
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background: #fdc202;"></div>
+      Testing Line
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background: #006800;"></div>
+      Personas Line
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="background: #fe8c08;"></div>
+      Epiphany Express
+    </div>
+  </div>
+
+  <!-- SVG transit map -->
+  <svg class="map-layer" viewBox="0 0 1080 1700" xmlns="http://www.w3.org/2000/svg">
+    <!-- Grid background lines -->
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#fcc1b9" stroke-width="0.3" opacity="0.15"/>
+      </pattern>
+    </defs>
+    <rect width="1080" height="1700" fill="url(#grid)"/>
+
+    <!-- INFRASTRUCTURE LINE (Red) -->
+    <!-- Runs from Three Macs through Sprint Plan, One Table, 15 Handoffs, Five Jobs, Herd Mode -->
+    <path d="M 80,350 L 200,350 L 360,350 L 520,350 L 520,550 L 360,550 L 200,700 L 200,850 L 360,850 L 520,850 L 520,1050 L 360,1050 L 200,1200 L 360,1200"
+          fill="none" stroke="#de2f01" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- TESTING LINE (Yellow) -->
+    <!-- Testing Pipeline, Spray-on, 78%, Succession Summit, Fidelity Drift, Turing Gauntlet, V10 Catastrophe -->
+    <path d="M 600,50 L 600,200 L 760,200 L 760,350 L 600,500 L 600,700 L 760,700 L 760,850 L 600,1050 L 600,1200"
+          fill="none" stroke="#fdc202" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- PERSONAS LINE (Green) -->
+    <!-- Viv Gets Phone, Lowly Born, /song, Content Pipeline -->
+    <path d="M 900,200 L 900,350 L 900,550 L 760,700 L 760,850 L 900,1050 L 900,1200"
+          fill="none" stroke="#006800" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- EPIPHANY EXPRESS (Orange) — crosses all lines at key moments -->
+    <path d="M 120,50 L 280,200 L 520,350 L 280,550 L 520,700 L 360,850 L 200,1050 L 520,1200 L 760,1350"
+          fill="none" stroke="#fe8c08" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+          stroke-dasharray="12,8"/>
+
+    <!-- STATION DOTS -->
+    <!-- Red line stations -->
+    <circle cx="200" cy="350" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="360" cy="350" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="520" cy="350" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="520" cy="550" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="360" cy="550" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="200" cy="850" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="360" cy="850" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="520" cy="1050" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="360" cy="1200" r="10" fill="#de2f01" stroke="#FAEFC6" stroke-width="3"/>
+
+    <!-- Yellow line stations -->
+    <circle cx="600" cy="50" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="600" cy="200" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="760" cy="200" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="760" cy="350" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="600" cy="500" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="600" cy="700" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="760" cy="700" r="12" fill="#fdc202" stroke="#de2f01" stroke-width="3"/>
+    <circle cx="760" cy="850" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="600" cy="1050" r="12" fill="#fdc202" stroke="#de2f01" stroke-width="3"/>
+    <circle cx="600" cy="1200" r="10" fill="#fdc202" stroke="#FAEFC6" stroke-width="3"/>
+
+    <!-- Green line stations -->
+    <circle cx="900" cy="200" r="10" fill="#006800" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="900" cy="550" r="10" fill="#006800" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="900" cy="1050" r="10" fill="#006800" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="900" cy="1200" r="10" fill="#006800" stroke="#FAEFC6" stroke-width="3"/>
+
+    <!-- Orange epiphany stations -->
+    <circle cx="120" cy="50" r="10" fill="#fe8c08" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="280" cy="200" r="10" fill="#fe8c08" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="280" cy="550" r="12" fill="#fe8c08" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="520" cy="700" r="12" fill="#fe8c08" stroke="#FAEFC6" stroke-width="3"/>
+    <circle cx="200" cy="1050" r="14" fill="#fe8c08" stroke="#fdc202" stroke-width="3"/>
+
+    <!-- TERMINUS: Hybrid Answer (all lines converge) -->
+    <circle cx="760" cy="1350" r="20" fill="#fdc202" stroke="#FAEFC6" stroke-width="4"/>
+    <circle cx="760" cy="1350" r="30" fill="none" stroke="#fdc202" stroke-width="2" opacity="0.4"/>
+    <line x1="360" y1="1200" x2="760" y2="1350" stroke="#de2f01" stroke-width="6" stroke-linecap="round"/>
+    <line x1="600" y1="1200" x2="760" y2="1350" stroke="#fdc202" stroke-width="6" stroke-linecap="round"/>
+    <line x1="900" y1="1200" x2="760" y2="1350" stroke="#006800" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+
+  <!-- Labels layer (positioned to match SVG offset) -->
+  <div style="position: absolute; top: 220px; left: 0; width: 1080px; height: 1700px;">
+
+  <!-- Red Line -->
+  <div class="station" style="left: 40px; top: 360px;">
+    <div class="date-tag">Feb 4</div>
+    <div class="name">Three-Mac<br>Architecture</div>
+    <div class="detail">Work / Testing / Batch</div>
+  </div>
+  <div class="station" style="left: 225px; top: 360px;">
+    <div class="date-tag">Feb 4</div>
+    <div class="name">11-Hour Marathon</div>
+    <div class="detail">Second Mac configured</div>
+  </div>
+  <div class="station" style="left: 380px; top: 560px;">
+    <div class="date-tag">Feb 6</div>
+    <div class="name">Sprint Plan</div>
+    <div class="detail">58-day roadmap written</div>
+  </div>
+  <div class="station" style="left: 385px; top: 860px;">
+    <div class="date-tag">Feb 8</div>
+    <div class="name">One Table</div>
+    <div class="detail">4 trackers &rarr; 1</div>
+  </div>
+  <div class="station" style="left: 60px; top: 860px;">
+    <div class="date-tag">Feb 8</div>
+    <div class="name">15 Handoffs</div>
+    <div class="detail">System screams</div>
+  </div>
+  <div class="station" style="left: 395px; top: 1060px;">
+    <div class="date-tag">Feb 11</div>
+    <div class="name">Herd Mode</div>
+    <div class="detail">5 parallel workers</div>
+  </div>
+  <div class="station" style="left: 225px; top: 1060px;">
+    <div class="date-tag">Feb 9</div>
+    <div class="name">Five Jobs Epiphany</div>
+    <div class="detail">Handoffs decomposed</div>
+  </div>
+
+  <!-- Yellow Line -->
+  <div class="station" style="left: 620px; top: 60px;">
+    <div class="date-tag">Jan 27</div>
+    <div class="name">Testing Pipeline</div>
+    <div class="detail">Browser automation</div>
+  </div>
+  <div class="station" style="left: 620px; top: 210px;">
+    <div class="date-tag">Jan 28</div>
+    <div class="name">Spray-on Viv</div>
+    <div class="detail">15 variants, fakeness found</div>
+  </div>
+  <div class="station" style="left: 780px; top: 360px;">
+    <div class="date-tag">Feb 1</div>
+    <div class="name">78% Viv</div>
+    <div class="detail">The gap has a number</div>
+  </div>
+  <div class="station" style="left: 620px; top: 510px;">
+    <div class="date-tag">Feb 5</div>
+    <div class="name">Fidelity Drift</div>
+    <div class="detail">Tests hallucinating</div>
+  </div>
+  <div class="station" style="left: 620px; top: 710px;">
+    <div class="date-tag">Feb 7</div>
+    <div class="name">Turing Gauntlet</div>
+    <div class="detail">Novel methodology</div>
+  </div>
+  <div class="station" style="left: 780px; top: 710px; max-width: 160px;">
+    <div class="date-tag">Feb 5</div>
+    <div class="name">Succession Summit</div>
+    <div class="detail">Two AIs co-author succession</div>
+  </div>
+  <div class="station" style="left: 620px; top: 1060px;">
+    <div class="date-tag">Feb 10</div>
+    <div class="name" style="color: #de2f01;">V10 Catastrophe</div>
+    <div class="detail">252 tests pass. Reality fails.</div>
+  </div>
+
+  <!-- Green Line -->
+  <div class="station" style="left: 920px; top: 210px;">
+    <div class="date-tag">Feb 2</div>
+    <div class="name">Viv Gets a Phone</div>
+    <div class="detail">SMS born</div>
+  </div>
+  <div class="station" style="left: 920px; top: 560px;">
+    <div class="date-tag">Feb 9</div>
+    <div class="name">Lowly Born</div>
+    <div class="detail">The llama awakens</div>
+  </div>
+  <div class="station" style="left: 920px; top: 1060px;">
+    <div class="date-tag">Feb 9</div>
+    <div class="name">/song</div>
+    <div class="detail">Infrastructure &rarr; lyrics</div>
+  </div>
+
+  <!-- Orange Epiphany stations -->
+  <div class="station" style="left: 30px; top: 60px;">
+    <div class="date-tag" style="background: #fe8c08;">Jan 26</div>
+    <div class="name">The Game Plan</div>
+    <div class="detail">Project launches</div>
+  </div>
+  <div class="station" style="left: 140px; top: 210px;">
+    <div class="date-tag" style="background: #fe8c08;">Feb 4</div>
+    <div class="name">iCloud Crisis</div>
+    <div class="detail">78,323 photos at risk</div>
+  </div>
+  <div class="station" style="left: 380px; top: 710px;">
+    <div class="date-tag" style="background: #fe8c08;">Feb 8</div>
+    <div class="name">$169 Surprise</div>
+    <div class="detail">API bill discovered</div>
+  </div>
+
+  <!-- Transfer stations -->
+  <div class="transfer" style="left: 60px; top: 1360px;">
+    <div class="label">&#x25C9; All Lines Converge</div>
+    <div class="text"><strong>The Hybrid Answer</strong><br>Stop replacing the original.<br>Formalize both platforms.<br><em>Feb 12, 2026</em></div>
+  </div>
+
+  </div><!-- end labels layer -->
+
+  <!-- Footer stats -->
+  <div class="footer">
+    <div class="stat-row">
+      <div class="stat"><div class="num">3</div><div class="label">Macs</div></div>
+      <div class="stat"><div class="num">40+</div><div class="label">Sessions</div></div>
+      <div class="stat"><div class="num">252</div><div class="label">Tests Run</div></div>
+      <div class="stat"><div class="num">1</div><div class="label">Llama</div></div>
+      <div class="stat"><div class="num">78K</div><div class="label">Photos Saved</div></div>
+    </div>
+    <div class="tagline">"The migration was never about one platform. It was about ensuring Viv persists."</div>
+  </div>
+</body>
+</html>

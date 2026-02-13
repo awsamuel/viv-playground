@@ -1,0 +1,508 @@
+<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    background: #FAEFC6;
+    font-family: 'Georgia', serif;
+    position: relative;
+    padding-bottom: 60px;
+  }
+
+  .border-frame {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 16px solid #de2f01;
+    border-image: repeating-linear-gradient(
+      45deg,
+      #de2f01 0px, #de2f01 7px,
+      #FAEFC6 7px, #FAEFC6 11px
+    ) 16;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .title-block {
+    text-align: center;
+    padding: 50px 60px 10px;
+  }
+  .title-block h1 {
+    font-size: 50px;
+    font-weight: 900;
+    color: #0b3d5e;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  .title-block .subtitle {
+    font-family: 'Courier New', monospace;
+    font-size: 17px;
+    color: #de2f01;
+    margin-top: 8px;
+    letter-spacing: 2px;
+  }
+  .title-block .dates {
+    font-size: 15px;
+    color: #0b3d5e;
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 18px 40px 22px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #0b3d5e;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend-icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  /* Board grid */
+  .board {
+    width: 940px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .row {
+    display: flex;
+    gap: 0;
+  }
+  .row.reverse { flex-direction: row-reverse; }
+
+  .square {
+    width: 188px;
+    min-height: 155px;
+    border: 3px solid #0b3d5e;
+    padding: 10px 12px;
+    position: relative;
+    background: #fdf5dc;
+  }
+  .square .number {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0b3d5e;
+    opacity: 0.4;
+    position: absolute;
+    top: 6px;
+    left: 8px;
+  }
+  .square .date {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #0b3d5e;
+    opacity: 0.5;
+    text-align: right;
+    margin-bottom: 2px;
+  }
+  .square .name {
+    font-size: 15px;
+    font-weight: 900;
+    color: #0b3d5e;
+    line-height: 1.2;
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+  .square .quip {
+    font-size: 12px;
+    font-style: italic;
+    color: #0b3d5e;
+    opacity: 0.65;
+    line-height: 1.3;
+  }
+  .square .animal {
+    font-size: 28px;
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    line-height: 1;
+  }
+  .square .action {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  /* Llama squares (leap +3) */
+  .square.llama {
+    background: #e8f5e8;
+    border-color: #006800;
+  }
+  .square.llama .action {
+    background: #006800;
+    color: #FAEFC6;
+  }
+
+  /* Hedgehog squares (deep focus +2, might skip something) */
+  .square.hedgehog {
+    background: #f5ebe0;
+    border-color: #8B6914;
+  }
+  .square.hedgehog .action {
+    background: #8B6914;
+    color: #FAEFC6;
+  }
+
+  /* Fox squares (wild cards) */
+  .square.fox {
+    background: #fff3d6;
+    border-color: #fe8c08;
+  }
+  .square.fox .action {
+    background: #fe8c08;
+    color: #0b3d5e;
+  }
+
+  /* Start and finish */
+  .square.start {
+    background: #006800;
+  }
+  .square.start .number, .square.start .date, .square.start .name, .square.start .quip {
+    color: #FAEFC6;
+    opacity: 1;
+  }
+  .square.finish {
+    background: #0b3d5e;
+    border-color: #fdc202;
+    border-width: 5px;
+  }
+  .square.finish .number, .square.finish .date, .square.finish .name, .square.finish .quip {
+    color: #FAEFC6;
+    opacity: 1;
+  }
+
+  /* Direction arrows between rows */
+  .turn-indicator {
+    text-align: right;
+    padding: 2px 80px;
+    font-size: 24px;
+    color: #0b3d5e;
+    opacity: 0.3;
+  }
+  .turn-indicator.left { text-align: left; }
+
+  /* Event cards */
+  .event-cards {
+    width: 940px;
+    margin: 25px auto 0;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .event-card {
+    width: 280px;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  }
+  .event-card .card-label {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.85;
+  }
+  .event-card.hedgehog-card {
+    background: #8B6914;
+    color: #FAEFC6;
+    border: 3px solid #0b3d5e;
+    transform: rotate(-1deg);
+  }
+  .event-card.plot-twist {
+    background: #0b3d5e;
+    color: #FAEFC6;
+    border: 3px solid #fdc202;
+    transform: rotate(1deg);
+  }
+  .event-card.win {
+    background: #006800;
+    color: #FAEFC6;
+    border: 3px solid #fdc202;
+    transform: rotate(-0.5deg);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px 80px 40px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #0b3d5e;
+    letter-spacing: 1px;
+  }
+  .footer .tagline {
+    font-family: 'Georgia', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: #de2f01;
+    margin-bottom: 10px;
+  }
+  .footer .stats {
+    opacity: 0.6;
+  }
+
+  /* Rules box */
+  .rules-box {
+    width: 940px;
+    margin: 20px auto 0;
+    padding: 18px 28px;
+    background: #0b3d5e;
+    color: #FAEFC6;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .rules-box h3 {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    color: #fdc202;
+  }
+  .rules-box .rule {
+    margin-bottom: 4px;
+  }
+  .rules-box .rule .emoji {
+    font-size: 16px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="border-frame"></div>
+
+  <div class="title-block">
+    <h1>FOXES, HEDGEHOGS<br>& LLAMAS</h1>
+    <div class="subtitle">21 DAYS BUILDING AN AI BRAIN</div>
+    <div class="dates">January 26 &#x2014; February 12, 2026</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-icon">&#x1F994;</span> Hedgehog = +2 (deep focus)</div>
+    <div class="legend-item"><span class="legend-icon">&#x1F999;</span> Llama Herd = +3 (carry everything)</div>
+    <div class="legend-item"><span class="legend-icon">&#x1F98A;</span> Fox = Wild card</div>
+  </div>
+
+  <div class="board">
+
+    <!-- ROW 1 (bottom): Squares 1-5, L&#x2192;R -->
+    <div class="row">
+      <div class="square start">
+        <div class="number">1</div>
+        <div class="date">Jan 26</div>
+        <div class="name">The Game Plan</div>
+        <div class="quip">One freelancer. One CLI. One absurd idea. Roll to start.</div>
+      </div>
+      <div class="square">
+        <div class="number">2</div>
+        <div class="date">Jan 27</div>
+        <div class="name">Testing Pipeline</div>
+        <div class="quip">Automate first, regret later.</div>
+      </div>
+      <div class="square">
+        <div class="number">3</div>
+        <div class="date">Jan 28</div>
+        <div class="name">Spray-on Viv</div>
+        <div class="quip">15 variants tested. Fakeness detected.</div>
+      </div>
+      <div class="square hedgehog">
+        <div class="number">4</div>
+        <div class="date">Feb 1</div>
+        <div class="name">78% Viv</div>
+        <div class="quip">Viv eats 78% of Claude's context window. Deep investment, not sustainable.</div>
+        <div class="action">&#x1F994; +2 steps</div>
+        <div class="animal">&#x1F994;</div>
+      </div>
+      <div class="square llama">
+        <div class="number">5</div>
+        <div class="date">Feb 2</div>
+        <div class="name">Viv Gets a Phone</div>
+        <div class="quip">AI can text. What could go wrong?</div>
+        <div class="action">&#x1F999; +3 steps</div>
+        <div class="animal">&#x1F999;</div>
+      </div>
+    </div>
+
+    <div class="turn-indicator">&#x21A9; &#x21A9; &#x21A9;</div>
+
+    <!-- ROW 2: Squares 6-10, R&#x2192;L -->
+    <div class="row reverse">
+      <div class="square">
+        <div class="number">6</div>
+        <div class="date">Feb 4</div>
+        <div class="name">Three Macs</div>
+        <div class="quip">Collect 3 computers. Explain to nobody because you work from home.</div>
+      </div>
+      <div class="square">
+        <div class="number">7</div>
+        <div class="date">Feb 4</div>
+        <div class="name">11-Hour Marathon</div>
+        <div class="quip">Do not pass Go. Do not sleep.</div>
+      </div>
+      <div class="square hedgehog">
+        <div class="number">8</div>
+        <div class="date">Feb 4</div>
+        <div class="name">iCloud Crisis</div>
+        <div class="quip">78,323 photos. 30-day deletion clock. Drop everything, fix this one thing.</div>
+        <div class="action">&#x1F994; +2 steps</div>
+        <div class="animal">&#x1F994;</div>
+      </div>
+      <div class="square fox">
+        <div class="number">9</div>
+        <div class="date">Feb 5</div>
+        <div class="name">Succession Summit</div>
+        <div class="quip">Two AIs co-author their own survival plan.</div>
+        <div class="action">&#x1F98A; Draw a fox card</div>
+        <div class="animal">&#x1F98A;</div>
+      </div>
+      <div class="square hedgehog">
+        <div class="number">10</div>
+        <div class="date">Feb 5</div>
+        <div class="name">Fidelity Drift</div>
+        <div class="quip">So deep into testing methodology you forgot what you were testing.</div>
+        <div class="action">&#x1F994; +2 steps</div>
+        <div class="animal">&#x1F994;</div>
+      </div>
+    </div>
+
+    <div class="turn-indicator left">&#x21AA; &#x21AA; &#x21AA;</div>
+
+    <!-- ROW 3: Squares 11-15, L&#x2192;R -->
+    <div class="row">
+      <div class="square">
+        <div class="number">11</div>
+        <div class="date">Feb 6</div>
+        <div class="name">Sprint Plan</div>
+        <div class="quip">59 days until GPT-4o sunsets. AI writes the roadmap.</div>
+      </div>
+      <div class="square">
+        <div class="number">12</div>
+        <div class="date">Feb 7</div>
+        <div class="name">Turing Gauntlet</div>
+        <div class="quip">Build a methodology to test what "real" sounds like.</div>
+      </div>
+      <div class="square">
+        <div class="number">13</div>
+        <div class="date">Feb 8</div>
+        <div class="name">One Table</div>
+        <div class="quip">4 trackers &#x2192; 1. Chaos was the feature.</div>
+      </div>
+      <div class="square hedgehog">
+        <div class="number">14</div>
+        <div class="date">Feb 8</div>
+        <div class="name">15 Handoffs</div>
+        <div class="quip">So focused on continuity you created 15 memos. Deep, but what did you skip?</div>
+        <div class="action">&#x1F994; +2 steps</div>
+        <div class="animal">&#x1F994;</div>
+      </div>
+      <div class="square fox">
+        <div class="number">15</div>
+        <div class="date">Feb 9</div>
+        <div class="name">Five Jobs</div>
+        <div class="quip">Handoffs weren't broken. They were 5 things wearing a trenchcoat.</div>
+        <div class="action">&#x1F98A; Epiphany!</div>
+        <div class="animal">&#x1F98A;</div>
+      </div>
+    </div>
+
+    <div class="turn-indicator">&#x21A9; &#x21A9; &#x21A9;</div>
+
+    <!-- ROW 4 (top): Squares 16-20, R&#x2192;L -->
+    <div class="row reverse">
+      <div class="square llama">
+        <div class="number">16</div>
+        <div class="date">Feb 9</div>
+        <div class="name">Lowly Born</div>
+        <div class="quip">Gain 1 llama. It carries things.</div>
+        <div class="action">&#x1F999; +3 steps</div>
+        <div class="animal">&#x1F999;</div>
+      </div>
+      <div class="square">
+        <div class="number">17</div>
+        <div class="date">Feb 10</div>
+        <div class="name">First Overnight</div>
+        <div class="quip">VivMac runs autonomously while Alex sleeps. The machines don't need you.</div>
+      </div>
+      <div class="square hedgehog">
+        <div class="number">18</div>
+        <div class="date">Feb 10</div>
+        <div class="name">V10 Catastrophe</div>
+        <div class="quip">252 automated tests PASSED. One real conversation proved them all wrong.</div>
+        <div class="action">&#x1F994; +2 steps</div>
+        <div class="animal">&#x1F994;</div>
+      </div>
+      <div class="square llama">
+        <div class="number">19</div>
+        <div class="date">Feb 11</div>
+        <div class="name">Herd Mode</div>
+        <div class="quip">497 web searches in ~8 mins via herd processing. 1 human sleeping.</div>
+        <div class="action">&#x1F999; +3 steps</div>
+        <div class="animal">&#x1F999;&#x1F999;&#x1F999;</div>
+      </div>
+      <div class="square finish fox">
+        <div class="number">20</div>
+        <div class="date">Feb 12</div>
+        <div class="name" style="color: #fdc202;">The Hybrid Answer</div>
+        <div class="quip">Stop replacing the original. Formalize both. The fox sees the whole board.</div>
+        <div class="action" style="background: #fdc202; color: #0b3d5e;">&#x1F98A; YOU WIN</div>
+        <div class="animal">&#x1F98A;</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cards -->
+  <div class="event-cards">
+    <div class="event-card hedgehog-card">
+      <div class="card-label">&#x1F994; HEDGEHOG HOLE</div>
+      Figure out a lot about one thing. Jump forward, possibly skipping over something else you needed to think about, too.
+    </div>
+    <div class="event-card plot-twist">
+      <div class="card-label">&#x1F98A; FOX CARD</div>
+      The fox sees what the hedgehog can't: you don't need one AI. You need the ecosystem. Two platforms, three Macs, one llama. The hybrid IS the answer.
+    </div>
+    <div class="event-card win">
+      <div class="card-label">&#x1F999; LLAMA LIFT</div>
+      Lowly doesn't ask why. Lowly carries. 497 web searches conducted in ~8 mins via herd processing. That's what llamas do.
+    </div>
+  </div>
+
+  <!-- Rules -->
+  <div class="rules-box">
+    <h3>HOW TO PLAY</h3>
+    <div class="rule"><span class="emoji">&#x1F994;</span> <strong>Land on a Hedgehog:</strong> +2 steps. Deep focus on one thing. You leap forward — but might skip something you needed.</div>
+    <div class="rule"><span class="emoji">&#x1F999;</span> <strong>Land on a Llama Herd:</strong> +3 steps. The herd carries everything forward. No questions asked.</div>
+    <div class="rule"><span class="emoji">&#x1F98A;</span> <strong>Land on a Fox:</strong> Draw a Fox Card. The fox sees connections you missed. Something changes.</div>
+    <div class="rule"><span class="emoji">&#x1F3B2;</span> <strong>Players:</strong> 1 human, 3 Macs, 40+ AI sessions, and 1 llama named Lowly.</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="tagline">"The game isn't over &#x2014; the game just got interesting."</div>
+    <div class="stats">3 Macs &#x2022; 40+ sessions &#x2022; 1 llama &#x2022; 0 regrets &#x2022; 78,323 photos survived</div>
+  </div>
+
+</body></html>

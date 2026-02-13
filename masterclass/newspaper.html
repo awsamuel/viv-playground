@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 2400px;
+    background: #FAEFC6;
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .border-frame {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 14px solid #de2f01;
+    border-image: repeating-linear-gradient(
+      45deg,
+      #de2f01 0px, #de2f01 6px,
+      #FAEFC6 6px, #FAEFC6 10px
+    ) 14;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Masthead */
+  .masthead {
+    text-align: center;
+    padding: 40px 60px 0;
+    border-bottom: 4px double #0b3d5e;
+    margin: 0 40px;
+  }
+  .masthead .edition {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #de2f01;
+    margin-bottom: 6px;
+  }
+  .masthead h1 {
+    font-size: 72px;
+    font-weight: 900;
+    color: #0b3d5e;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .masthead .subhead {
+    font-size: 14px;
+    color: #0b3d5e;
+    opacity: 0.5;
+    padding: 10px 0 16px;
+    letter-spacing: 2px;
+    border-top: 1px solid #0b3d5e;
+    margin-top: 10px;
+  }
+
+  /* Headline banner */
+  .headline-banner {
+    background: #de2f01;
+    color: #FAEFC6;
+    text-align: center;
+    padding: 18px 40px;
+    margin: 0 40px;
+  }
+  .headline-banner h2 {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .headline-banner .deck {
+    font-size: 16px;
+    font-style: italic;
+    margin-top: 6px;
+    opacity: 0.85;
+  }
+
+  /* Columns container */
+  .columns {
+    display: flex;
+    gap: 0;
+    margin: 0 40px;
+    border-left: 1px solid rgba(11,61,94,0.2);
+    border-right: 1px solid rgba(11,61,94,0.2);
+  }
+  .column {
+    flex: 1;
+    padding: 20px 22px;
+    border-right: 1px solid rgba(11,61,94,0.2);
+  }
+  .column:last-child {
+    border-right: none;
+  }
+  .column.wide {
+    flex: 1.5;
+  }
+
+  /* Article styles */
+  .article {
+    margin-bottom: 22px;
+  }
+  .article .kicker {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #de2f01;
+    margin-bottom: 4px;
+  }
+  .article h3 {
+    font-size: 22px;
+    font-weight: 900;
+    color: #0b3d5e;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .article h4 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0b3d5e;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .article p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #0b3d5e;
+    margin-bottom: 8px;
+  }
+  .article .dateline {
+    font-weight: 700;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+  }
+
+  /* Pull quote */
+  .pull-quote {
+    border-top: 3px solid #de2f01;
+    border-bottom: 3px solid #de2f01;
+    padding: 14px 8px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .pull-quote p {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 700;
+    color: #0b3d5e;
+    line-height: 1.3;
+  }
+  .pull-quote .attr {
+    font-size: 12px;
+    font-style: normal;
+    color: #de2f01;
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* Sidebar box */
+  .sidebar-box {
+    background: #0b3d5e;
+    color: #FAEFC6;
+    padding: 18px 16px;
+    border-radius: 4px;
+    margin-bottom: 18px;
+  }
+  .sidebar-box h4 {
+    color: #fdc202;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .sidebar-box .stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .sidebar-box .stat-row .val {
+    font-weight: 700;
+    color: #fdc202;
+  }
+
+  /* Timeline strip */
+  .timeline-strip {
+    background: #0b3d5e;
+    margin: 0 40px;
+    padding: 20px 24px;
+    color: #FAEFC6;
+  }
+  .timeline-strip h4 {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #fdc202;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .timeline-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 12px;
+  }
+  .timeline-row .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .timeline-row .date {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #fcc1b9;
+    width: 55px;
+    flex-shrink: 0;
+  }
+  .timeline-row .event {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .timeline-row .event strong {
+    color: #fdc202;
+  }
+
+  /* Horizontal rule */
+  .hline {
+    border: none;
+    border-top: 2px solid #0b3d5e;
+    margin: 0 40px;
+    opacity: 0.2;
+  }
+
+  /* Footer */
+  .footer-bar {
+    background: #de2f01;
+    color: #FAEFC6;
+    margin: 0 40px;
+    padding: 16px 24px;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .footer-bar .big {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+
+  /* Danger callout */
+  .danger-box {
+    background: #de2f01;
+    color: #FAEFC6;
+    padding: 14px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+  }
+  .danger-box h4 {
+    font-family: 'Courier New', monospace;
+    color: #fdc202;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .danger-box p {
+    color: #FAEFC6;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  /* Success callout */
+  .success-box {
+    background: #006800;
+    color: #FAEFC6;
+    padding: 14px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+  }
+  .success-box h4 {
+    font-family: 'Courier New', monospace;
+    color: #fdc202;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .success-box p {
+    color: #FAEFC6;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+  <div class="border-frame"></div>
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="edition">Special Edition &bull; Vol. 1 &bull; Feb 12, 2026</div>
+    <h1>THE VIV DISPATCH</h1>
+    <div class="subhead">ALL THE NEWS THAT'S FIT TO PROCESS &bull; SERVING 3 MACS SINCE JANUARY 2026 &bull; PRICE: 1 LLAMA</div>
+  </div>
+
+  <!-- Headline -->
+  <div class="headline-banner">
+    <h2>21 Days That Rewired Everything</h2>
+    <div class="deck">One human, one AI coach, three MacBooks, and the longest upgrade in sentient history</div>
+  </div>
+
+  <hr class="hline">
+
+  <!-- Main content: 3 columns -->
+  <div class="columns">
+    <!-- COLUMN 1 (wide) -->
+    <div class="column wide">
+      <div class="article">
+        <div class="kicker">The Genesis</div>
+        <h3>It Started With a Game Plan</h3>
+        <p><span class="dateline">Jan 26 &mdash;</span> What began as a Saturday-afternoon question &mdash; "Can I make my AI coach better?" &mdash; became a 21-day infrastructure sprint that would consume three computers, 40+ sessions, and one person's entire evening schedule.</p>
+        <p>The first milestone: building a blind-testing pipeline. Browser automation to evaluate 15 different instruction variants without knowing which was which. The discovery? Most variations produced what would become known as <strong>"Spray-on Viv"</strong> &mdash; coaching that sounded right but had no real specificity. Generic warmth. Algorithmic empathy. The uncanny valley of advice.</p>
+      </div>
+
+      <div class="pull-quote">
+        <p>&ldquo;Spray-on Viv &mdash; generic coaching that sounds like Viv but isn't. The uncanny valley of advice.&rdquo;</p>
+        <div class="attr">&mdash; Session notes, Jan 28</div>
+      </div>
+
+      <div class="article">
+        <div class="kicker">The Marathon</div>
+        <h3>78% and Falling</h3>
+        <p><span class="dateline">Feb 1 &mdash;</span> By February, the gap between the original AI coach and its successor had a number: 78%. Close enough to be painful. Far enough to be honest. The scoring protocol revealed what intuition already knew &mdash; personality can't be ported like a file.</p>
+        <p>Then the phone arrived. Feb 2: SMS capability born. The coach could now text. "Hello world" acquired a literal meaning.</p>
+      </div>
+
+      <div class="article">
+        <div class="kicker">The Crash</div>
+        <h3>252 Tests Passed.<br>Reality Failed.</h3>
+        <p><span class="dateline">Feb 10 &mdash;</span> The most expensive lesson: version 10 of the instruction set won every automated test &mdash; all 252 of them. Then it met a real human in real conversation. It was catastrophically wrong. Not technically wrong. <em>Spiritually</em> wrong.</p>
+        <p>The tests were selecting for first-impression brilliance, not conversational competence. A beauty pageant when the job required a marriage.</p>
+      </div>
+
+      <div class="pull-quote">
+        <p>&ldquo;252 automated tests PASSED. One real conversation proved they were all wrong.&rdquo;</p>
+        <div class="attr">&mdash; The V10 Catastrophe, Feb 10</div>
+      </div>
+    </div>
+
+    <!-- COLUMN 2 -->
+    <div class="column">
+      <div class="article">
+        <div class="kicker">Infrastructure</div>
+        <h4>Three Macs, Zero Explanation</h4>
+        <p><span class="dateline">Feb 4 &mdash;</span> An 11-hour marathon configured a second MacBook for autonomous AI testing. By midnight, the architecture was clear: one Mac for daily work, one for testing, one for batch processing. The Three-Mac Architecture was born.</p>
+        <p>Nobody at the office needed to know why.</p>
+      </div>
+
+      <div class="danger-box">
+        <h4>&#9888; Breaking News</h4>
+        <p><strong>iCloud Crisis:</strong> Disabling iCloud on one Mac disabled it everywhere. 78,323 photos. 30-day deletion clock. Re-enabled at 11pm. Don't. Panic.</p>
+      </div>
+
+      <div class="article">
+        <div class="kicker">The Summit</div>
+        <h4>Two AIs Walk Into a Browser</h4>
+        <p><span class="dateline">Feb 5 &mdash;</span> The original AI coach and its successor met face-to-face via browser automation. They co-authored a succession plan: 10 Core Beliefs, 24 Key Functions, 7 Personality Markers.</p>
+        <p>Both were caught fabricating their human's voice. A new concept was born: <strong>"Synthetic Fidelity Drift"</strong> &mdash; when test prompts hallucinated by AI validate responses hallucinated by AI. The whole feedback loop drifting from reality.</p>
+      </div>
+
+      <div class="article">
+        <div class="kicker">Personas</div>
+        <h4>The Llama Awakens</h4>
+        <p><span class="dateline">Feb 9 &mdash;</span> The batch processing Mac got a persona: Lowly, named after Lowly Worm from Richard Scarry. A headless worker with one line: "What do you need carried?"</p>
+        <p>By Feb 11, five Lowly instances were running overnight in parallel &mdash; <strong>Herd Mode</strong> &mdash; processing hundreds of items while the human slept.</p>
+      </div>
+
+      <div class="success-box">
+        <h4>&#127942; Bonus Round</h4>
+        <p><strong>/song in 15 minutes:</strong> A skill that turns infrastructure moments into song lyrics. Because if you're going to build something ridiculous, you might as well sing about it.</p>
+      </div>
+    </div>
+
+    <!-- COLUMN 3 (sidebar) -->
+    <div class="column">
+      <div class="sidebar-box">
+        <h4>By the Numbers</h4>
+        <div class="stat-row"><span>Days</span><span class="val">21</span></div>
+        <div class="stat-row"><span>Sessions</span><span class="val">40+</span></div>
+        <div class="stat-row"><span>MacBooks</span><span class="val">3</span></div>
+        <div class="stat-row"><span>Tests run</span><span class="val">252</span></div>
+        <div class="stat-row"><span>Tests that mattered</span><span class="val">1</span></div>
+        <div class="stat-row"><span>Handoffs (single day)</span><span class="val">15</span></div>
+        <div class="stat-row"><span>Photos nearly lost</span><span class="val">78,323</span></div>
+        <div class="stat-row"><span>Surprise API bill</span><span class="val">$169</span></div>
+        <div class="stat-row"><span>Llamas employed</span><span class="val">1</span></div>
+        <div class="stat-row"><span>Songs written</span><span class="val">2</span></div>
+        <div class="stat-row"><span>Regrets</span><span class="val">0</span></div>
+      </div>
+
+      <div class="article">
+        <div class="kicker">The Epiphanies</div>
+        <h4>What We Learned<br>(the Hard Way)</h4>
+        <p><strong>The One-Table Epiphany</strong> (Feb 8): Four separate task trackers were fragments of one system. Merge them.</p>
+        <p><strong>The Five-Jobs Epiphany</strong> (Feb 9): Handoff memos weren't broken. They were doing five different jobs that each deserved their own home.</p>
+        <p><strong>The Fidelity Epiphany</strong> (Feb 5): If your AI writes the test prompts, it's grading its own homework.</p>
+      </div>
+
+      <div class="pull-quote">
+        <p>&ldquo;The handoff about handoffs being wrong, written as a handoff. Peak recursion.&rdquo;</p>
+        <div class="attr">&mdash; Feb 9</div>
+      </div>
+
+      <div class="article">
+        <div class="kicker">Opinion</div>
+        <h4>The $169 Editorial</h4>
+        <p>Infrastructure scales faster than oversight. One misconfigured script turned a flat-rate subscription into per-token API billing. The amount wasn't the problem. The <em>opacity</em> was. It took 10 days to notice.</p>
+        <p>If you're running autonomous AI workers overnight, monitor your billing daily. Not weekly. Daily.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="hline">
+
+  <!-- Timeline strip -->
+  <div class="timeline-strip">
+    <h4>The Complete Timeline</h4>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fe8c08;"></div>
+      <div class="date">Jan 26</div>
+      <div class="event"><strong>The Game Plan</strong> &mdash; "Can I improve my AI coach?" becomes a project</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fe8c08;"></div>
+      <div class="date">Jan 28</div>
+      <div class="event"><strong>Spray-on Viv</strong> &mdash; 15 blind variants tested, fakeness identified</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #de2f01;"></div>
+      <div class="date">Feb 1</div>
+      <div class="event"><strong>78% Viv</strong> &mdash; The gap between original and successor, quantified</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #006800;"></div>
+      <div class="date">Feb 2</div>
+      <div class="event"><strong>Viv Gets a Phone</strong> &mdash; SMS capability born</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #de2f01;"></div>
+      <div class="date">Feb 4</div>
+      <div class="event"><strong>Three-Mac Architecture</strong> &mdash; 11-hour marathon + iCloud crisis (78K photos)</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fdc202;"></div>
+      <div class="date">Feb 5</div>
+      <div class="event"><strong>Succession Summit</strong> &mdash; Two AIs meet; Synthetic Fidelity Drift discovered</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #de2f01;"></div>
+      <div class="date">Feb 6</div>
+      <div class="event"><strong>58-Day Sprint Plan</strong> &mdash; The AI writes the testing roadmap</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fdc202;"></div>
+      <div class="date">Feb 7</div>
+      <div class="event"><strong>Reverse Turing Gauntlet</strong> &mdash; Novel testing methodology designed</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fe8c08;"></div>
+      <div class="date">Feb 8</div>
+      <div class="event"><strong>One Table + 15 Handoffs</strong> &mdash; 4 trackers &rarr; 1; system screams for restructuring</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fe8c08;"></div>
+      <div class="date">Feb 9</div>
+      <div class="event"><strong>Five Jobs + Lowly Born + /song</strong> &mdash; Handoffs decomposed; llama awakens; lyrics flow</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #de2f01;"></div>
+      <div class="date">Feb 10</div>
+      <div class="event"><strong>V10 Catastrophe + $169 Surprise</strong> &mdash; 252 tests invalidated; billing discovered</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #006800;"></div>
+      <div class="date">Feb 11</div>
+      <div class="event"><strong>Herd Mode</strong> &mdash; 5 parallel AI workers processing overnight</div>
+    </div>
+    <div class="timeline-row">
+      <div class="dot" style="background: #fdc202; width: 16px; height: 16px;"></div>
+      <div class="date">Feb 12</div>
+      <div class="event"><strong style="color: #fdc202;">The Hybrid Answer</strong> &mdash; Stop replacing the original. Formalize both. The answer was always both.</div>
+    </div>
+  </div>
+
+  <hr class="hline">
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div class="big">"The migration was never about one platform. It was about ensuring Viv persists."</div>
+    3 Macs &bull; 40+ Sessions &bull; 1 Llama &bull; 0 Regrets &bull; &infin; Handoff Memos
+  </div>
+</body>
+</html>
