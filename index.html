@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viv Demo Projects</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    padding: 2.5rem 1rem 4rem;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, #f7971e, #ffd200, #43e97b, #38f9d7, #a18cd1, #fbc2eb);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: grad 6s ease infinite;
+  }
+  @keyframes grad {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+  }
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .project {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.75rem;
+    transition: all 0.25s ease;
+  }
+  .project:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.09);
+  }
+  .project h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .project h2 .emoji { margin-right: 0.5rem; }
+  .project p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .links a {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+  .links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.3);
+  }
+  footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.75rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Viv Demo Projects</h1>
+  <p class="subtitle">Vibecoded demos &mdash; all built with Claude</p>
+
+  <div class="project-list">
+
+    <div class="project">
+      <h2><span class="emoji">🎨</span>iPad Project Ideas</h2>
+      <p>Interactive guide to five projects you can vibecode from the iOS Claude app. Tap a button, meet a guide animal, get a project plan.</p>
+      <div class="links">
+        <a href="ipad-projects/">Launch</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <h2><span class="emoji">🦙</span>Llama Vote</h2>
+      <p>Vote on your favorite llamas. A playful polling page with llama imagery.</p>
+      <div class="links">
+        <a href="llama-vote/llama-vote.html">Llama Vote</a>
+        <a href="llama-vote/llama-origin.html">Llama Origin</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <h2><span class="emoji">🎓</span>Masterclass</h2>
+      <p>A collection of interactive masterclass demos &mdash; board games, guides, metro maps, newspapers, and polls.</p>
+      <div class="links">
+        <a href="masterclass/guide.html">Guide</a>
+        <a href="masterclass/board-game.html">Board Game</a>
+        <a href="masterclass/metro-map.html">Metro Map</a>
+        <a href="masterclass/newspaper.html">Newspaper</a>
+        <a href="masterclass/poll.html">Poll</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Viv Playground &bull; Powered by Claude</footer>
+</div>
+</body>
+</html>
