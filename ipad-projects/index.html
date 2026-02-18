@@ -217,7 +217,7 @@
     transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .project-card.open .reveal-panel {
-    max-height: 600px;
+    max-height: 900px;
   }
 
   .reveal-inner {
@@ -332,6 +332,53 @@
   .card-dashboard .tool-tag { border-color: rgba(161,140,209,0.5); background: rgba(161,140,209,0.15); }
   .card-automation .tool-tag { border-color: rgba(102,126,234,0.5); background: rgba(102,126,234,0.15); }
 
+  /* Launch actions */
+  .launch-actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .launch-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 0.6rem;
+  }
+  .launch-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .launch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.65rem;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .launch-btn:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.3);
+    transform: translateY(-1px);
+  }
+  .launch-btn:active { transform: scale(0.97); }
+  .launch-btn .btn-icon { font-size: 1rem; }
+  .launch-btn.copied {
+    border-color: rgba(67,233,123,0.6);
+    background: rgba(67,233,123,0.15);
+  }
+
   /* Footer */
   footer {
     text-align: center;
@@ -437,6 +484,14 @@
             <div class="tool-tag">
               <span class="tool-icon">&#9829;</span> Try Lovable &mdash; generates full-stack sites from prompts
             </div>
+            <div class="launch-actions">
+              <div class="launch-label">Start building this project now</div>
+              <div class="launch-btns">
+                <a class="launch-btn" href="#" onclick="openInChatGPT('portfolio'); return false;"><span class="btn-icon">&#x1F4AC;</span> Open in ChatGPT</a>
+                <button class="launch-btn" onclick="copyPrompt('portfolio', this)"><span class="btn-icon">&#x1F4CB;</span> Copy for Claude</button>
+                <a class="launch-btn" href="https://lovable.dev" target="_blank" rel="noopener"><span class="btn-icon">&#9829;</span> Open Lovable</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -462,6 +517,14 @@
             <p>Build a chatbot with a custom personality &mdash; a pirate tutor, a recipe coach, a sarcastic code reviewer. Use Claude Code to scaffold a simple front-end with a chat interface, then wire it up to the Anthropic API. You can store your API key as an environment variable and keep the whole thing running as a static page with client-side calls or push it to a serverless backend.</p>
             <div class="tool-tag">
               <span class="tool-icon">&#9670;</span> Try Claude API &mdash; build conversational AI directly
+            </div>
+            <div class="launch-actions">
+              <div class="launch-label">Start building this project now</div>
+              <div class="launch-btns">
+                <a class="launch-btn" href="#" onclick="openInChatGPT('chatbot'); return false;"><span class="btn-icon">&#x1F4AC;</span> Open in ChatGPT</a>
+                <button class="launch-btn" onclick="copyPrompt('chatbot', this)"><span class="btn-icon">&#x1F4CB;</span> Copy for Claude</button>
+                <a class="launch-btn" href="https://console.anthropic.com" target="_blank" rel="noopener"><span class="btn-icon">&#9670;</span> Anthropic Console</a>
+              </div>
             </div>
           </div>
         </div>
@@ -489,6 +552,14 @@
             <div class="tool-tag">
               <span class="tool-icon">&#9654;</span> Try Replit &mdash; live preview + multiplayer coding in-browser
             </div>
+            <div class="launch-actions">
+              <div class="launch-label">Start building this project now</div>
+              <div class="launch-btns">
+                <a class="launch-btn" href="#" onclick="openInChatGPT('game'); return false;"><span class="btn-icon">&#x1F4AC;</span> Open in ChatGPT</a>
+                <button class="launch-btn" onclick="copyPrompt('game', this)"><span class="btn-icon">&#x1F4CB;</span> Copy for Claude</button>
+                <a class="launch-btn" href="https://replit.com" target="_blank" rel="noopener"><span class="btn-icon">&#9654;</span> Open Replit</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -514,6 +585,14 @@
             <p>Dashboards are a great way to make data feel alive. Ask Claude to build a page with Chart.js or D3.js &mdash; bar charts, line graphs, pie charts, you name it. Feed it sample data or point it at a public API (weather, stocks, GitHub stats). Add filters, dark mode, and responsive layouts. The whole thing can be a single HTML file deployed to GitHub Pages.</p>
             <div class="tool-tag">
               <span class="tool-icon">&#9650;</span> Try v0 by Vercel &mdash; AI-generated React UI components
+            </div>
+            <div class="launch-actions">
+              <div class="launch-label">Start building this project now</div>
+              <div class="launch-btns">
+                <a class="launch-btn" href="#" onclick="openInChatGPT('dashboard'); return false;"><span class="btn-icon">&#x1F4AC;</span> Open in ChatGPT</a>
+                <button class="launch-btn" onclick="copyPrompt('dashboard', this)"><span class="btn-icon">&#x1F4CB;</span> Copy for Claude</button>
+                <a class="launch-btn" href="https://v0.dev" target="_blank" rel="noopener"><span class="btn-icon">&#9650;</span> Open v0</a>
+              </div>
             </div>
           </div>
         </div>
@@ -541,6 +620,14 @@
             <div class="tool-tag">
               <span class="tool-icon">&#9881;</span> Try Claude Code CLI &mdash; terminal-native AI pair programming
             </div>
+            <div class="launch-actions">
+              <div class="launch-label">Start building this project now</div>
+              <div class="launch-btns">
+                <a class="launch-btn" href="#" onclick="openInChatGPT('automation'); return false;"><span class="btn-icon">&#x1F4AC;</span> Open in ChatGPT</a>
+                <button class="launch-btn" onclick="copyPrompt('automation', this)"><span class="btn-icon">&#x1F4CB;</span> Copy for Claude</button>
+                <a class="launch-btn" href="https://claude.ai" target="_blank" rel="noopener"><span class="btn-icon">&#9670;</span> Open Claude</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -554,6 +641,89 @@
 </div>
 
 <script>
+  // Starter prompts for each project
+  const prompts = {
+    portfolio: `I want to build a personal portfolio website from scratch. I'm working from an iPad using Claude Code. Please help me create a beautiful, responsive single-page portfolio site with these sections:
+
+1. A hero section with my name and a short tagline
+2. An "About Me" section
+3. A projects showcase with cards (use placeholder content for now)
+4. A contact section with links to GitHub, LinkedIn, and email
+
+Use modern CSS (gradients, smooth animations, glass-morphism effects). Make it a single index.html file with embedded CSS and JS so I can deploy it easily to GitHub Pages. Start by asking me my name and what kind of work I want to showcase.`,
+
+    chatbot: `I want to build a custom AI chatbot with a fun personality. I'm working from an iPad using Claude Code. Help me create a chat interface that connects to an AI API. Here's what I want:
+
+1. A clean, modern chat UI with message bubbles (user vs. bot)
+2. A themed personality — suggest 3 fun character options for me to pick from (e.g. pirate tutor, sarcastic chef, zen life coach)
+3. The ability to type messages and get responses
+4. Start with a mock/demo mode that works without an API key, then show me how to wire it up to the Anthropic API when I'm ready
+
+Build it as a single HTML file with embedded CSS/JS. Make the design feel polished — dark mode, typing indicators, smooth animations.`,
+
+    game: `I want to build a fun browser-based game. I'm working from an iPad using Claude Code. Please help me create a playable game using HTML5 Canvas and vanilla JavaScript. Here are some ideas — pick the one you think will be most fun to build and play, or suggest something better:
+
+1. A falling-blocks puzzle game (Tetris-style)
+2. A simple platformer with procedurally generated levels
+3. An emoji-based tower defense game
+4. A reaction-time / rhythm game
+
+Requirements:
+- Single HTML file, no dependencies
+- Touch-friendly controls (this will be played on iPad too)
+- Score tracking and a "play again" flow
+- Colorful, juicy visual feedback (screen shake, particles, etc.)
+- Sound effects using the Web Audio API (no external files)
+
+Start building and let me playtest as we go!`,
+
+    dashboard: `I want to build an interactive data dashboard. I'm working from an iPad using Claude Code. Help me create a beautiful, responsive dashboard with live-feeling charts and filters. Here's what I'm thinking:
+
+1. Use Chart.js (CDN) for the visualizations
+2. Include at least 3 different chart types (bar, line, and pie/doughnut)
+3. Add filter controls that update the charts dynamically
+4. Pull from a public API — pick something interesting like weather data, GitHub stats, cryptocurrency prices, or space/NASA data
+5. Dark theme with a modern, clean layout
+6. Responsive so it works great on iPad
+
+Build it as a single HTML file. If an API needs a key, start with realistic sample data and show me where to plug in a real key later.`,
+
+    automation: `I want to build useful automation scripts and CLI tools. I'm working from an iPad using Claude Code's terminal. Help me create a toolkit of practical scripts. Let's start with these and you can suggest more:
+
+1. A file organizer script that sorts files in a directory by type (images, documents, code, etc.)
+2. A Markdown-to-HTML converter with nice default styling
+3. A git helper that shows a pretty summary of recent commits, branches, and status
+4. A quick note-taking CLI that saves timestamped notes to a local file
+
+For each tool:
+- Write clean, well-commented code (Python or Node.js, whichever fits best)
+- Include a --help flag
+- Make them actually useful, not just demos
+
+Start with whichever one you think I'll use the most, then we'll build the others.`
+  };
+
+  // Open prompt in ChatGPT via pre-filled URL
+  function openInChatGPT(key) {
+    const prompt = prompts[key];
+    const encoded = encodeURIComponent(prompt);
+    window.open('https://chatgpt.com/?q=' + encoded, '_blank');
+  }
+
+  // Copy prompt to clipboard (for pasting into Claude, etc.)
+  function copyPrompt(key, btn) {
+    const prompt = prompts[key];
+    navigator.clipboard.writeText(prompt).then(() => {
+      const original = btn.innerHTML;
+      btn.innerHTML = '<span class="btn-icon">&#x2714;</span> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
   // Toggle cards open/closed
   function toggle(id) {
     const card = document.getElementById(id);
