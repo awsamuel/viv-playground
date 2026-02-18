@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPad Vibecoding Project Ideas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* Floating background particles */
+  .bg-particles {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .bg-particles span {
+    position: absolute;
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0.15;
+  }
+  @keyframes float {
+    0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.15; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  header h1 {
+    font-size: 2.4rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, #f7971e, #ffd200, #43e97b, #38f9d7, #a18cd1, #fbc2eb);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 6s ease infinite;
+    line-height: 1.2;
+  }
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  header p {
+    margin-top: 0.75rem;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ipad-badge {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.4rem 1.2rem;
+    border-radius: 2rem;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .buttons-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  /* Project Card */
+  .project-card {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .project-btn {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    padding: 1.5rem 1.75rem;
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 1.25rem;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 1.25rem;
+  }
+  .project-btn:hover::before,
+  .project-btn:active::before {
+    opacity: 1;
+  }
+  .project-btn:active {
+    transform: scale(0.98);
+  }
+
+  .project-btn .icon-circle {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-btn .btn-text {
+    position: relative;
+    z-index: 1;
+  }
+  .project-btn .btn-text .label {
+    display: block;
+    font-size: 1.15rem;
+  }
+  .project-btn .btn-text .sublabel {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    opacity: 0.6;
+    margin-top: 0.15rem;
+  }
+
+  .project-btn .arrow {
+    margin-left: auto;
+    font-size: 1.3rem;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .project-btn:hover .arrow {
+    opacity: 0.8;
+    transform: translateX(4px);
+  }
+
+  /* Card-specific colors */
+  .card-portfolio .project-btn { border-color: rgba(247,151,30,0.3); }
+  .card-portfolio .project-btn::before { background: linear-gradient(135deg, rgba(247,151,30,0.12), rgba(255,210,0,0.08)); }
+  .card-portfolio .icon-circle { background: linear-gradient(135deg, #f7971e, #ffd200); }
+
+  .card-chatbot .project-btn { border-color: rgba(67,233,123,0.3); }
+  .card-chatbot .project-btn::before { background: linear-gradient(135deg, rgba(67,233,123,0.12), rgba(56,249,215,0.08)); }
+  .card-chatbot .icon-circle { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+
+  .card-game .project-btn { border-color: rgba(250,112,154,0.3); }
+  .card-game .project-btn::before { background: linear-gradient(135deg, rgba(250,112,154,0.12), rgba(254,225,64,0.08)); }
+  .card-game .icon-circle { background: linear-gradient(135deg, #fa709a, #fee140); }
+
+  .card-dashboard .project-btn { border-color: rgba(161,140,209,0.3); }
+  .card-dashboard .project-btn::before { background: linear-gradient(135deg, rgba(161,140,209,0.12), rgba(251,194,235,0.08)); }
+  .card-dashboard .icon-circle { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+
+  .card-automation .project-btn { border-color: rgba(102,126,234,0.3); }
+  .card-automation .project-btn::before { background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.08)); }
+  .card-automation .icon-circle { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+  /* Expanded state */
+  .project-card.open .project-btn {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  /* Reveal panel */
+  .reveal-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .project-card.open .reveal-panel {
+    max-height: 600px;
+  }
+
+  .reveal-inner {
+    padding: 1.75rem;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-top: none;
+    border-radius: 0 0 1.25rem 1.25rem;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(12px);
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .animal-container {
+    flex-shrink: 0;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .project-card.open .animal-container {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  .animal-emoji {
+    font-size: 4.5rem;
+    display: block;
+    animation: wiggle 2s ease-in-out infinite;
+    cursor: default;
+  }
+  .animal-emoji:hover {
+    animation: bounce 0.5s ease;
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .animal-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+    opacity: 0.5;
+  }
+
+  /* Speech bubble */
+  .speech-bubble {
+    position: relative;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    flex: 1;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.5s ease 0.2s;
+  }
+  .project-card.open .speech-bubble {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 24px;
+    border: 6px solid transparent;
+    border-right-color: rgba(255,255,255,0.15);
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 25px;
+    border: 5px solid transparent;
+    border-right-color: rgba(255,255,255,0.1);
+  }
+
+  .speech-bubble p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .tool-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1rem;
+    padding: 0.45rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+  .tool-tag .tool-icon {
+    font-size: 1rem;
+  }
+
+  .card-portfolio .tool-tag { border-color: rgba(247,151,30,0.5); background: rgba(247,151,30,0.15); }
+  .card-chatbot .tool-tag { border-color: rgba(67,233,123,0.5); background: rgba(67,233,123,0.15); }
+  .card-game .tool-tag { border-color: rgba(250,112,154,0.5); background: rgba(250,112,154,0.15); }
+  .card-dashboard .tool-tag { border-color: rgba(161,140,209,0.5); background: rgba(161,140,209,0.15); }
+  .card-automation .tool-tag { border-color: rgba(102,126,234,0.5); background: rgba(102,126,234,0.15); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    color: rgba(255,255,255,0.35);
+    font-size: 0.8rem;
+  }
+  footer a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.7rem; }
+    .project-btn { padding: 1.2rem 1.25rem; gap: 1rem; }
+    .project-btn .icon-circle { width: 46px; height: 46px; font-size: 1.4rem; }
+    .project-btn .btn-text .label { font-size: 1rem; }
+    .reveal-inner { flex-direction: column; align-items: center; text-align: center; }
+    .speech-bubble::before, .speech-bubble::after { display: none; }
+    .animal-emoji { font-size: 3.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating particles background -->
+<div class="bg-particles" id="particles"></div>
+
+<div class="container">
+  <header>
+    <h1>What Should You Build on Your iPad?</h1>
+    <p>Five project ideas you can vibecode from the Claude app &mdash; no laptop needed. Tap a card to meet your guide animal.</p>
+    <div class="ipad-badge">Built for iPad + Claude Code</div>
+  </header>
+
+  <div class="buttons-grid">
+
+    <!-- 1. Portfolio Site -->
+    <div class="project-card card-portfolio" id="card-portfolio">
+      <button class="project-btn" onclick="toggle('card-portfolio')">
+        <div class="icon-circle">🌐</div>
+        <div class="btn-text">
+          <span class="label">Personal Portfolio Site</span>
+          <span class="sublabel">A polished site to show off your work</span>
+        </div>
+        <span class="arrow">&#8250;</span>
+      </button>
+      <div class="reveal-panel">
+        <div class="reveal-inner">
+          <div class="animal-container">
+            <span class="animal-emoji">🦊</span>
+            <div class="animal-name">Foxworth</div>
+          </div>
+          <div class="speech-bubble">
+            <p>A portfolio is the perfect first vibecoding project! Tell Claude what sections you want &mdash; hero, about me, projects, contact &mdash; and it'll generate a complete single-page site. You can iterate on the design right from your iPad, ask for animations, dark mode, or a color palette change. Deploy it straight to GitHub Pages without ever leaving the chat.</p>
+            <div class="tool-tag">
+              <span class="tool-icon">&#9829;</span> Try Lovable &mdash; generates full-stack sites from prompts
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. AI Chatbot -->
+    <div class="project-card card-chatbot" id="card-chatbot">
+      <button class="project-btn" onclick="toggle('card-chatbot')">
+        <div class="icon-circle">🤖</div>
+        <div class="btn-text">
+          <span class="label">Custom AI Chatbot</span>
+          <span class="sublabel">A themed bot with its own personality</span>
+        </div>
+        <span class="arrow">&#8250;</span>
+      </button>
+      <div class="reveal-panel">
+        <div class="reveal-inner">
+          <div class="animal-container">
+            <span class="animal-emoji">🦜</span>
+            <div class="animal-name">Polly</div>
+          </div>
+          <div class="speech-bubble">
+            <p>Build a chatbot with a custom personality &mdash; a pirate tutor, a recipe coach, a sarcastic code reviewer. Use Claude Code to scaffold a simple front-end with a chat interface, then wire it up to the Anthropic API. You can store your API key as an environment variable and keep the whole thing running as a static page with client-side calls or push it to a serverless backend.</p>
+            <div class="tool-tag">
+              <span class="tool-icon">&#9670;</span> Try Claude API &mdash; build conversational AI directly
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Browser Game -->
+    <div class="project-card card-game" id="card-game">
+      <button class="project-btn" onclick="toggle('card-game')">
+        <div class="icon-circle">🎮</div>
+        <div class="btn-text">
+          <span class="label">Browser-Based Game</span>
+          <span class="sublabel">A playable game that runs in any browser</span>
+        </div>
+        <span class="arrow">&#8250;</span>
+      </button>
+      <div class="reveal-panel">
+        <div class="reveal-inner">
+          <div class="animal-container">
+            <span class="animal-emoji">🐙</span>
+            <div class="animal-name">Inky</div>
+          </div>
+          <div class="speech-bubble">
+            <p>Games are surprisingly vibecode-friendly! Ask Claude to build a canvas-based game &mdash; think falling blocks, a platformer, a quiz game, or a card battler. Pure HTML/CSS/JS games need zero server setup. Describe the mechanics you want, playtest in your browser, then ask Claude to tweak physics, add sound effects, or create new levels. It's the fastest creative feedback loop on an iPad.</p>
+            <div class="tool-tag">
+              <span class="tool-icon">&#9654;</span> Try Replit &mdash; live preview + multiplayer coding in-browser
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Data Dashboard -->
+    <div class="project-card card-dashboard" id="card-dashboard">
+      <button class="project-btn" onclick="toggle('card-dashboard')">
+        <div class="icon-circle">📊</div>
+        <div class="btn-text">
+          <span class="label">Interactive Dashboard</span>
+          <span class="sublabel">Visualize data with charts &amp; filters</span>
+        </div>
+        <span class="arrow">&#8250;</span>
+      </button>
+      <div class="reveal-panel">
+        <div class="reveal-inner">
+          <div class="animal-container">
+            <span class="animal-emoji">🦉</span>
+            <div class="animal-name">Sage</div>
+          </div>
+          <div class="speech-bubble">
+            <p>Dashboards are a great way to make data feel alive. Ask Claude to build a page with Chart.js or D3.js &mdash; bar charts, line graphs, pie charts, you name it. Feed it sample data or point it at a public API (weather, stocks, GitHub stats). Add filters, dark mode, and responsive layouts. The whole thing can be a single HTML file deployed to GitHub Pages.</p>
+            <div class="tool-tag">
+              <span class="tool-icon">&#9650;</span> Try v0 by Vercel &mdash; AI-generated React UI components
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Automation Script -->
+    <div class="project-card card-automation" id="card-automation">
+      <button class="project-btn" onclick="toggle('card-automation')">
+        <div class="icon-circle">⚡</div>
+        <div class="btn-text">
+          <span class="label">Automation &amp; CLI Tools</span>
+          <span class="sublabel">Scripts that do your busywork for you</span>
+        </div>
+        <span class="arrow">&#8250;</span>
+      </button>
+      <div class="reveal-panel">
+        <div class="reveal-inner">
+          <div class="animal-container">
+            <span class="animal-emoji">🐸</span>
+            <div class="animal-name">Ribbit</div>
+          </div>
+          <div class="speech-bubble">
+            <p>Claude Code on iPad is perfect for writing shell scripts, Python utilities, or Node.js CLI tools. Automate file renaming, generate reports from CSVs, build a Markdown-to-PDF converter, or create a git hook that lints your commits. You write the spec in plain English, Claude writes the code, and you can test it right in the terminal. It's the ultimate productivity hack.</p>
+            <div class="tool-tag">
+              <span class="tool-icon">&#9881;</span> Try Claude Code CLI &mdash; terminal-native AI pair programming
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Made with vibecoding on an iPad &bull; Powered by Claude</p>
+  </footer>
+</div>
+
+<script>
+  // Toggle cards open/closed
+  function toggle(id) {
+    const card = document.getElementById(id);
+    const wasOpen = card.classList.contains('open');
+
+    // Close all cards first
+    document.querySelectorAll('.project-card').forEach(c => c.classList.remove('open'));
+
+    // If it wasn't open, open it
+    if (!wasOpen) {
+      card.classList.add('open');
+      // Smooth scroll to the card
+      setTimeout(() => {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }
+
+  // Generate floating particles
+  (function createParticles() {
+    const container = document.getElementById('particles');
+    const colors = ['#f7971e','#43e97b','#fa709a','#a18cd1','#667eea','#ffd200','#38f9d7','#fbc2eb'];
+    for (let i = 0; i < 30; i++) {
+      const span = document.createElement('span');
+      const size = Math.random() * 20 + 6;
+      span.style.width = size + 'px';
+      span.style.height = size + 'px';
+      span.style.left = Math.random() * 100 + '%';
+      span.style.background = colors[Math.floor(Math.random() * colors.length)];
+      span.style.animationDuration = (Math.random() * 15 + 10) + 's';
+      span.style.animationDelay = (Math.random() * 10) + 's';
+      container.appendChild(span);
+    }
+  })();
+</script>
+</body>
+</html>
