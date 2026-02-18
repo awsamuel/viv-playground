@@ -345,6 +345,46 @@
     text-decoration: none;
   }
 
+  /* Origin prompt bubble */
+  .origin-prompt {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    padding: 1.5rem 1.75rem;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 1.25rem;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.75);
+  }
+  .origin-prompt::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(255,255,255,0.12);
+  }
+  .origin-prompt-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.6rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .origin-prompt p {
+    margin: 0;
+  }
+
   /* Responsive */
   @media (max-width: 600px) {
     header h1 { font-size: 1.7rem; }
@@ -368,6 +408,11 @@
     <p>Five project ideas you can vibecode from the Claude app &mdash; no laptop needed. Tap a card to meet your guide animal.</p>
     <div class="ipad-badge">Built for iPad + Claude Code</div>
   </header>
+
+  <div class="origin-prompt">
+    <div class="origin-prompt-label">The prompt that started this</div>
+    <p>I want to test what's possible to build on an iPad by vibecoding from Claude Code. Can you make a colorful interactive website that has buttons for different projects you could consider trying to build from within the iOS Claude app if you have a subscription that includes Claude Code. Offer five big buttons and when you press one, it reveals an animal and then the animal has a little speech bubble that tells you how you might be able to do that kind of project. Each bubble/animal could also suggest a different tool, like Lovable, Replit, Claude or things that I'm not even thinking about. Your goal is to actually create a working prototype and push it to a hosted page on GitHub or some other site where a user would not have to do any set up other than what they do right here in the Claude Code interface.</p>
+  </div>
 
   <div class="buttons-grid">
 
