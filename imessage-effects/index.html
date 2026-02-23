@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iMessage Effect Maximizer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #007AFF;
+      --green: #34C759;
+      --red: #FF3B30;
+      --orange: #FF9500;
+      --purple: #AF52DE;
+      --pink: #FF2D55;
+      --gray: #8E8E93;
+      --light-gray: #F2F2F7;
+      --card-bg: #FFFFFF;
+      --border: rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--light-gray);
+      min-height: 100vh;
+      color: #1D1D1F;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    /* Main */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* API Key Bar */
+    .api-bar {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .api-bar label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .api-bar input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-family: 'SF Mono', monospace;
+      outline: none;
+    }
+
+    .api-bar input:focus { border-color: var(--blue); }
+
+    .api-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gray);
+      flex-shrink: 0;
+    }
+
+    .api-status.connected { background: var(--green); }
+
+    /* Input Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .card-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .message-input {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      font-size: 18px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      min-height: 80px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+    }
+
+    .message-input:focus {
+      border-color: var(--blue);
+    }
+
+    .message-input::placeholder {
+      color: #C7C7CC;
+    }
+
+    /* Controls Row */
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .maximize-btn {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .maximize-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,122,255,0.35);
+    }
+
+    .maximize-btn:active { transform: scale(0.98); }
+
+    .maximize-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .vibe-select {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      background: white;
+      cursor: pointer;
+    }
+
+    .vibe-select:focus { border-color: var(--blue); }
+
+    /* Loading */
+    .loading {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .loading.visible { display: flex; }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Result Section */
+    .result-section {
+      display: none;
+    }
+
+    .result-section.visible { display: block; }
+
+    /* The rewritten message */
+    .rewritten-message {
+      background: linear-gradient(135deg, #f8f9ff, #f0f0ff);
+      border: 2px solid rgba(0,122,255,0.15);
+      border-radius: 20px;
+      padding: 24px;
+      font-size: 22px;
+      line-height: 1.6;
+      text-align: center;
+      min-height: 80px;
+      position: relative;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .copy-btn:hover { background: #0066DD; }
+    .copy-btn.copied { background: var(--green); }
+
+    /* Effect Instructions */
+    .instructions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .instructions-grid { grid-template-columns: 1fr; }
+    }
+
+    .instruction-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .instruction-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .instruction-card .step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .step-num {
+      background: var(--blue);
+      color: white;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-num.green { background: var(--green); }
+    .step-num.orange { background: var(--orange); }
+    .step-num.purple { background: var(--purple); }
+    .step-num.pink { background: var(--pink); }
+
+    /* Keyword highlights */
+    .trigger-tag {
+      display: inline-block;
+      background: rgba(0,122,255,0.1);
+      color: var(--blue);
+      padding: 2px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 2px;
+    }
+
+    .effect-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 2px;
+    }
+
+    .tag-screen { background: #E8F5E9; color: #2E7D32; }
+    .tag-inline { background: #FFF3E0; color: #E65100; }
+    .tag-bubble { background: #F3E5F5; color: #7B1FA2; }
+
+    /* Quick Reference */
+    .quick-ref {
+      margin-top: 24px;
+    }
+
+    .quick-ref summary {
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--blue);
+      padding: 12px 0;
+    }
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .ref-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .ref-item .ref-keyword {
+      font-weight: 600;
+      font-family: 'SF Mono', monospace;
+      font-size: 13px;
+    }
+
+    .ref-item .ref-effect {
+      color: var(--gray);
+      font-size: 13px;
+      margin-left: auto;
+    }
+
+    /* Error */
+    .error-msg {
+      background: #FFF0F0;
+      border: 1px solid #FFD0D0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--red);
+      font-size: 14px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    /* History */
+    .history-section {
+      margin-top: 32px;
+    }
+
+    .history-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--gray);
+    }
+
+    .history-item {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .history-item:hover { background: #F8F8FF; }
+
+    .history-original {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+
+    .history-rewritten {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .history-meta {
+      font-size: 11px;
+      color: #C7C7CC;
+      margin-top: 6px;
+      display: flex;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-inner">
+      <h1>iMessage Effect Maximizer</h1>
+      <p>Turn boring texts into cinematic iMessage experiences. Rewrite, copy, paste, send.</p>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- API Key -->
+    <div class="api-bar">
+      <label>Anthropic API Key</label>
+      <input type="password" id="apiKey" placeholder="sk-ant-..." oninput="saveApiKey()" />
+      <div class="api-status" id="apiStatus"></div>
+    </div>
+
+    <!-- Input -->
+    <div class="card">
+      <div class="card-label">Your boring message</div>
+      <textarea class="message-input" id="messageInput" placeholder="e.g. &quot;Happy birthday, hope you have a good one&quot;"></textarea>
+
+      <div class="controls-row">
+        <select class="vibe-select" id="vibeSelect">
+          <option value="maximum-chaos">Maximum Chaos Mode</option>
+          <option value="tasteful-extra">Tasteful But Extra</option>
+          <option value="emoji-overload">Emoji Overload</option>
+          <option value="keyword-hunter">Keyword Trigger Hunter</option>
+          <option value="romantic">Romantic Cinema</option>
+          <option value="hype">Hype Beast</option>
+        </select>
+        <button class="maximize-btn" id="maximizeBtn" onclick="maximize()">
+          Maximize It
+        </button>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <span>Maximizing your text for cinematic impact...</span>
+    </div>
+
+    <!-- Result -->
+    <div class="result-section" id="resultSection">
+
+      <div class="card">
+        <div class="card-label">Copy this into iMessage</div>
+        <div class="rewritten-message" id="rewrittenMessage"></div>
+        <button class="copy-btn" id="copyBtn" onclick="copyMessage()">Copy</button>
+      </div>
+
+      <div class="instructions-grid" id="instructionsGrid"></div>
+
+      <!-- Analysis -->
+      <div class="card" style="margin-top:20px">
+        <div class="card-label">Effect Breakdown</div>
+        <div id="effectBreakdown"></div>
+      </div>
+
+    </div>
+
+    <!-- Quick Reference -->
+    <details class="quick-ref">
+      <summary>iMessage Effects Cheat Sheet</summary>
+      <div class="ref-grid">
+        <div class="ref-item"><span class="ref-keyword">"Happy Birthday"</span><span class="ref-effect">Balloons</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Congratulations"</span><span class="ref-effect">Confetti</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Congrats"</span><span class="ref-effect">Confetti</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Best Wishes"</span><span class="ref-effect">Confetti</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Happy New Year"</span><span class="ref-effect">Fireworks</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Pew Pew"</span><span class="ref-effect">Lasers</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Happy Eid"</span><span class="ref-effect">Shooting Star</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Happy Lunar New Year"</span><span class="ref-effect">Celebration</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Happy Chinese New Year"</span><span class="ref-effect">Celebration</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Selamat"</span><span class="ref-effect">Confetti</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Happy Deepawali"</span><span class="ref-effect">Fireworks</span></div>
+        <div class="ref-item"><span class="ref-keyword">"Happy Holi"</span><span class="ref-effect">Confetti</span></div>
+      </div>
+
+      <h4 style="margin:16px 0 8px;font-size:14px;color:#8E8E93">Inline Text Effects (iOS 18+ / select text > tap A)</h4>
+      <div class="ref-grid">
+        <div class="ref-item"><span class="ref-keyword">Big</span><span class="ref-effect">Text enlarges momentarily</span></div>
+        <div class="ref-item"><span class="ref-keyword">Small</span><span class="ref-effect">Text shrinks momentarily</span></div>
+        <div class="ref-item"><span class="ref-keyword">Shake</span><span class="ref-effect">Bold horizontal shake</span></div>
+        <div class="ref-item"><span class="ref-keyword">Nod</span><span class="ref-effect">Bold vertical bounce</span></div>
+        <div class="ref-item"><span class="ref-keyword">Explode</span><span class="ref-effect">Bulges outward then bursts</span></div>
+        <div class="ref-item"><span class="ref-keyword">Ripple</span><span class="ref-effect">Wavy cascade per letter</span></div>
+        <div class="ref-item"><span class="ref-keyword">Bloom</span><span class="ref-effect">Highlights letter by letter</span></div>
+        <div class="ref-item"><span class="ref-keyword">Jitter</span><span class="ref-effect">Subtle nervous tremor</span></div>
+      </div>
+
+      <h4 style="margin:16px 0 8px;font-size:14px;color:#8E8E93">Bubble Effects (long-press send > Bubble tab)</h4>
+      <div class="ref-grid">
+        <div class="ref-item"><span class="ref-keyword">Slam</span><span class="ref-effect">Drops forcefully with dust</span></div>
+        <div class="ref-item"><span class="ref-keyword">Loud</span><span class="ref-effect">Expands and trembles</span></div>
+        <div class="ref-item"><span class="ref-keyword">Gentle</span><span class="ref-effect">Starts tiny, gradually appears</span></div>
+        <div class="ref-item"><span class="ref-keyword">Invisible Ink</span><span class="ref-effect">Blurred until tapped</span></div>
+      </div>
+
+      <h4 style="margin:16px 0 8px;font-size:14px;color:#8E8E93">Screen Effects (long-press send > Screen tab)</h4>
+      <div class="ref-grid">
+        <div class="ref-item"><span class="ref-keyword">Echo</span><span class="ref-effect">Message replicates across screen</span></div>
+        <div class="ref-item"><span class="ref-keyword">Spotlight</span><span class="ref-effect">Dark room, spotlight on message</span></div>
+        <div class="ref-item"><span class="ref-keyword">Balloons</span><span class="ref-effect">Colorful balloons float up</span></div>
+        <div class="ref-item"><span class="ref-keyword">Confetti</span><span class="ref-effect">Confetti rains down</span></div>
+        <div class="ref-item"><span class="ref-keyword">Love</span><span class="ref-effect">Giant 3D heart expands</span></div>
+        <div class="ref-item"><span class="ref-keyword">Lasers</span><span class="ref-effect">Neon beams sweep screen</span></div>
+        <div class="ref-item"><span class="ref-keyword">Fireworks</span><span class="ref-effect">Fireworks on dark bg</span></div>
+        <div class="ref-item"><span class="ref-keyword">Shooting Star</span><span class="ref-effect">Star streaks across</span></div>
+        <div class="ref-item"><span class="ref-keyword">Celebration</span><span class="ref-effect">Sparkles burst everywhere</span></div>
+      </div>
+
+      <h4 style="margin:16px 0 8px;font-size:14px;color:#8E8E93">Important Notes</h4>
+      <div style="padding:12px;font-size:13px;color:#666;line-height:1.6">
+        <p>&#8226; Keyword triggers are case-insensitive but adding emojis to the <em>same message</em> as a trigger phrase may prevent the auto-effect from firing</p>
+        <p>&#8226; For maximum effect: send the keyword trigger as its own message, then follow up with the emoji-rich version</p>
+        <p>&#8226; Inline text effects (Shake, Explode, etc.) require iOS 18+ on both sender and receiver</p>
+        <p>&#8226; Only works with iMessage (blue bubbles), not SMS/RCS (green bubbles)</p>
+        <p>&#8226; 340+ keyword triggers exist across 133 languages</p>
+      </div>
+    </details>
+
+    <!-- History -->
+    <div class="history-section" id="historySection" style="display:none">
+      <h2>Recent Maximizations</h2>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== STATE =====
+    let history = JSON.parse(localStorage.getItem('imessage-maximizer-history') || '[]');
+
+    // ===== API KEY =====
+    const apiKeyInput = document.getElementById('apiKey');
+    apiKeyInput.value = localStorage.getItem('anthropic-api-key') || '';
+    updateApiStatus();
+
+    function saveApiKey() {
+      localStorage.setItem('anthropic-api-key', apiKeyInput.value);
+      updateApiStatus();
+    }
+
+    function updateApiStatus() {
+      const status = document.getElementById('apiStatus');
+      status.classList.toggle('connected', apiKeyInput.value.startsWith('sk-ant-'));
+    }
+
+    // ===== KEYWORD TRIGGERS =====
+    const keywordTriggers = [
+      { phrases: ['happy birthday'], effect: 'Balloons', emoji: '\u{1F388}', type: 'screen-auto' },
+      { phrases: ['congratulations', 'congrats', 'best wishes', 'happy holi', 'selamat'], effect: 'Confetti', emoji: '\u{1F389}', type: 'screen-auto' },
+      { phrases: ['happy new year', 'happy deepawali'], effect: 'Fireworks', emoji: '\u{1F386}', type: 'screen-auto' },
+      { phrases: ['pew pew'], effect: 'Lasers', emoji: '\u{1F52B}', type: 'screen-auto' },
+      { phrases: ['happy eid'], effect: 'Shooting Star', emoji: '\u{1F320}', type: 'screen-auto' },
+      { phrases: ['happy chinese new year', 'happy lunar new year'], effect: 'Celebration', emoji: '\u2728', type: 'screen-auto' },
+    ];
+
+    function detectTriggers(text) {
+      const lower = text.toLowerCase().trim();
+      const found = [];
+      for (const trigger of keywordTriggers) {
+        for (const phrase of trigger.phrases) {
+          if (lower === phrase || lower === phrase + '!' || lower === phrase + '!!' || lower === phrase + '!!!') {
+            found.push({ ...trigger, matchedPhrase: phrase });
+          }
+        }
+      }
+      return found;
+    }
+
+    function detectTriggersInText(text) {
+      const lower = text.toLowerCase();
+      const found = [];
+      for (const trigger of keywordTriggers) {
+        for (const phrase of trigger.phrases) {
+          if (lower.includes(phrase)) {
+            found.push({ ...trigger, matchedPhrase: phrase });
+          }
+        }
+      }
+      return found;
+    }
+
+    // ===== MAXIMIZE =====
+    async function maximize() {
+      const input = document.getElementById('messageInput').value.trim();
+      if (!input) return;
+
+      const apiKey = apiKeyInput.value.trim();
+      if (!apiKey) {
+        showError('Enter your Anthropic API key above to use AI rewriting.');
+        return;
+      }
+
+      const vibe = document.getElementById('vibeSelect').value;
+      const btn = document.getElementById('maximizeBtn');
+      const loading = document.getElementById('loading');
+      const errorMsg = document.getElementById('errorMsg');
+
+      btn.disabled = true;
+      loading.classList.add('visible');
+      errorMsg.classList.remove('visible');
+      document.getElementById('resultSection').classList.remove('visible');
+
+      try {
+        const result = await callClaude(input, vibe);
+        displayResult(input, result, vibe);
+      } catch (err) {
+        showError(err.message || 'Something went wrong calling the API.');
+      } finally {
+        btn.disabled = false;
+        loading.classList.remove('visible');
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    // ===== CLAUDE API =====
+    async function callClaude(message, vibe) {
+      const apiKey = apiKeyInput.value.trim();
+
+      const vibeDescriptions = {
+        'maximum-chaos': 'Go absolutely wild. Maximum emojis, maximum energy, make every word feel like an event. Strategic placement of words that could trigger iMessage keyword effects.',
+        'tasteful-extra': 'Elegant but expressive. Use emojis purposefully, not excessively. Each emoji should land perfectly. Still aim for iMessage effect triggers where natural.',
+        'emoji-overload': 'Pack in as many relevant emojis as possible. Every sentence should have multiple emojis. Think emoji translator on steroids.',
+        'keyword-hunter': 'The primary goal is to restructure the message so it naturally contains or ends with iMessage keyword triggers (Happy Birthday, Congratulations, Pew Pew, etc.). Split into multiple messages if needed to isolate trigger phrases.',
+        'romantic': 'Cinematic, romantic energy. Think movie-worthy declarations. Rose and heart emojis. Dramatic but sincere.',
+        'hype': 'Maximum hype energy. All-caps moments, fire emojis, celebration energy. Like a hypeman wrote your text.',
+      };
+
+      const systemPrompt = `You are an iMessage text effect maximizer. Your job is to take a boring text message and rewrite it to create the most cinematic, dynamic iMessage experience possible.
+
+You know all iMessage effects:
+
+AUTOMATIC KEYWORD TRIGGERS (the message must ONLY contain the trigger phrase to auto-play):
+- "Happy Birthday" -> Balloons fill screen
+- "Congratulations" / "Congrats" / "Best Wishes" -> Confetti rains down
+- "Happy New Year" -> Fireworks
+- "Pew Pew" -> Lasers
+- "Happy Eid" -> Shooting Star
+- "Happy Lunar New Year" / "Happy Chinese New Year" -> Celebration
+
+IMPORTANT: These triggers ONLY work when the entire message is JUST the trigger phrase (with optional punctuation). Adding emojis or extra words to the same message as a trigger phrase will PREVENT the effect from firing.
+
+INLINE TEXT EFFECTS (iOS 18+ - user selects text and applies manually):
+- Big: text enlarges
+- Small: text shrinks
+- Shake: bold horizontal shake (great for emphasis, shouting, urgency)
+- Nod: bold vertical bounce (great for agreement, yes, approval)
+- Explode: bulges and bursts (great for big reveals, wow moments)
+- Ripple: wavy cascade (great for flowing, water, waves, music)
+- Bloom: letter-by-letter highlight (great for names, romantic, dramatic reveals)
+- Jitter: nervous tremor (great for nervousness, excitement, anticipation)
+
+BUBBLE EFFECTS (user long-presses send):
+- Slam: drops forcefully (great for strong statements)
+- Loud: expands and trembles (great for shouting, excitement)
+- Gentle: starts tiny, fades in (great for soft, sweet messages)
+- Invisible Ink: blurred until tapped (great for surprises, secrets)
+
+SCREEN EFFECTS (user long-presses send, Screen tab):
+- Echo, Spotlight, Balloons, Confetti, Love, Lasers, Fireworks, Shooting Star, Celebration
+
+Your response MUST be valid JSON with this exact structure:
+{
+  "messages": [
+    {
+      "text": "the message text to paste into iMessage",
+      "note": "optional context about this message",
+      "auto_trigger": "name of auto-trigger effect if this message IS a keyword trigger, or null",
+      "suggested_bubble_effect": "slam|loud|gentle|invisible_ink|none",
+      "suggested_screen_effect": "echo|spotlight|balloons|confetti|love|lasers|fireworks|shooting_star|celebration|none",
+      "inline_effects": [
+        {
+          "words": "the specific word(s) to select",
+          "effect": "big|small|shake|nod|explode|ripple|bloom|jitter",
+          "reason": "why this effect on these words"
+        }
+      ]
+    }
+  ],
+  "strategy": "Brief explanation of the overall strategy",
+  "send_order_note": "Instructions for what order to send these messages and any timing tips"
+}
+
+RULES:
+1. If a keyword trigger is relevant, put it as its OWN separate message (no emojis or extra words) so the auto-effect fires
+2. Use emojis generously in the non-trigger messages
+3. Suggest inline effects for the most impactful words
+4. You can split one message into a SEQUENCE of 2-4 messages for maximum cinematic effect
+5. For keyword trigger messages, do NOT add emojis (it breaks the trigger)
+6. Think about the send order - build anticipation
+7. Keep the core meaning of the original message intact
+8. The rewrite should feel natural, not robotic - like a real person who is just very expressive`;
+
+      const userPrompt = `Vibe: ${vibeDescriptions[vibe]}
+
+Original boring message: "${message}"
+
+Rewrite this for maximum iMessage effect impact. Return ONLY valid JSON.`;
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2048,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userPrompt }],
+        }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error?.message || `API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const text = data.content[0].text;
+
+      // Parse JSON from response (handle markdown code blocks)
+      let jsonStr = text;
+      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) jsonStr = jsonMatch[1];
+
+      return JSON.parse(jsonStr.trim());
+    }
+
+    // ===== DISPLAY RESULT =====
+    function displayResult(original, result, vibe) {
+      const section = document.getElementById('resultSection');
+      const messageDiv = document.getElementById('rewrittenMessage');
+      const instructionsGrid = document.getElementById('instructionsGrid');
+      const breakdownDiv = document.getElementById('effectBreakdown');
+
+      // Build the main display
+      let messagesHtml = '';
+      result.messages.forEach((msg, i) => {
+        const msgNum = result.messages.length > 1 ? `<span style="font-size:12px;color:#8E8E93;display:block;margin-bottom:4px">Message ${i + 1}${msg.auto_trigger ? ' (auto-triggers ' + msg.auto_trigger + ')' : ''}</span>` : '';
+        const border = i > 0 ? 'border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 16px; margin-top: 16px;' : '';
+        messagesHtml += `<div style="${border}">${msgNum}<div style="font-size:22px;line-height:1.6">${escapeHtml(msg.text)}</div></div>`;
+      });
+      messageDiv.innerHTML = messagesHtml;
+
+      // Build instruction cards
+      let cardsHtml = '';
+
+      // Send order
+      if (result.send_order_note) {
+        cardsHtml += `
+          <div class="instruction-card">
+            <h3>&#127916; Send Order</h3>
+            <div class="step"><div class="step-num">!</div><div>${escapeHtml(result.send_order_note)}</div></div>
+          </div>`;
+      }
+
+      // Strategy
+      if (result.strategy) {
+        cardsHtml += `
+          <div class="instruction-card">
+            <h3>&#127775; Strategy</h3>
+            <div class="step"><div class="step-num purple">i</div><div>${escapeHtml(result.strategy)}</div></div>
+          </div>`;
+      }
+
+      // Per-message instructions
+      result.messages.forEach((msg, i) => {
+        let steps = '';
+        let stepNum = 1;
+
+        // Keyword trigger
+        if (msg.auto_trigger) {
+          steps += `<div class="step"><div class="step-num green">${stepNum++}</div><div>Just paste and send! <span class="effect-tag tag-screen">${msg.auto_trigger}</span> will auto-play</div></div>`;
+        }
+
+        // Inline effects
+        if (msg.inline_effects && msg.inline_effects.length > 0) {
+          msg.inline_effects.forEach(fx => {
+            steps += `<div class="step"><div class="step-num orange">${stepNum++}</div><div>Select "<strong>${escapeHtml(fx.words)}</strong>" > tap <strong>A</strong> > <span class="effect-tag tag-inline">${fx.effect}</span><br><span style="color:#8E8E93;font-size:12px">${escapeHtml(fx.reason)}</span></div></div>`;
+          });
+        }
+
+        // Bubble effect
+        if (msg.suggested_bubble_effect && msg.suggested_bubble_effect !== 'none') {
+          steps += `<div class="step"><div class="step-num pink">${stepNum++}</div><div>Long-press send > <strong>Bubble</strong> tab > <span class="effect-tag tag-bubble">${msg.suggested_bubble_effect}</span></div></div>`;
+        }
+
+        // Screen effect (manual)
+        if (msg.suggested_screen_effect && msg.suggested_screen_effect !== 'none' && !msg.auto_trigger) {
+          steps += `<div class="step"><div class="step-num">${stepNum++}</div><div>Long-press send > <strong>Screen</strong> tab > <span class="effect-tag tag-screen">${msg.suggested_screen_effect}</span></div></div>`;
+        }
+
+        if (steps) {
+          cardsHtml += `
+            <div class="instruction-card">
+              <h3>${result.messages.length > 1 ? 'Message ' + (i + 1) : 'How to Send'}</h3>
+              ${steps}
+            </div>`;
+        }
+      });
+
+      instructionsGrid.innerHTML = cardsHtml;
+
+      // Effect breakdown
+      let breakdownHtml = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">';
+      const allEffects = new Set();
+      result.messages.forEach(msg => {
+        if (msg.auto_trigger) allEffects.add(`Screen: ${msg.auto_trigger}`);
+        if (msg.suggested_screen_effect && msg.suggested_screen_effect !== 'none') allEffects.add(`Screen: ${msg.suggested_screen_effect}`);
+        if (msg.suggested_bubble_effect && msg.suggested_bubble_effect !== 'none') allEffects.add(`Bubble: ${msg.suggested_bubble_effect}`);
+        if (msg.inline_effects) msg.inline_effects.forEach(fx => allEffects.add(`Inline: ${fx.effect}`));
+      });
+      allEffects.forEach(e => {
+        const type = e.startsWith('Screen') ? 'tag-screen' : e.startsWith('Bubble') ? 'tag-bubble' : 'tag-inline';
+        breakdownHtml += `<span class="effect-tag ${type}">${e}</span>`;
+      });
+      breakdownHtml += '</div>';
+      breakdownHtml += `<p style="margin-top:12px;font-size:13px;color:#8E8E93">${result.messages.length} message(s) | ${allEffects.size} effect(s) triggered</p>`;
+      breakdownDiv.innerHTML = breakdownHtml;
+
+      section.classList.add('visible');
+
+      // Save to history
+      const entry = { original, result, vibe, timestamp: Date.now() };
+      history.unshift(entry);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('imessage-maximizer-history', JSON.stringify(history));
+      renderHistory();
+    }
+
+    // ===== COPY =====
+    function copyMessage() {
+      const messages = document.getElementById('rewrittenMessage');
+      // Get just the text content of each message div
+      const messageDivs = messages.querySelectorAll('div[style*="font-size:22px"]');
+      let textToCopy = '';
+      messageDivs.forEach((div, i) => {
+        if (i > 0) textToCopy += '\n---\n';
+        textToCopy += div.textContent;
+      });
+      if (!textToCopy) textToCopy = messages.textContent;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ===== HISTORY =====
+    function renderHistory() {
+      const section = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+
+      if (history.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+      list.innerHTML = history.map((entry, i) => `
+        <div class="history-item" onclick="loadHistory(${i})">
+          <div class="history-original">${escapeHtml(entry.original)}</div>
+          <div class="history-rewritten">${escapeHtml(entry.result.messages.map(m => m.text).join(' | '))}</div>
+          <div class="history-meta">
+            <span>${entry.vibe}</span>
+            <span>${new Date(entry.timestamp).toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadHistory(index) {
+      const entry = history[index];
+      document.getElementById('messageInput').value = entry.original;
+      document.getElementById('vibeSelect').value = entry.vibe;
+      displayResult(entry.original, entry.result, entry.vibe);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ===== KEYBOARD =====
+    document.getElementById('messageInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        maximize();
+      }
+    });
+
+    // Init
+    renderHistory();
+  </script>
+
+</body>
+</html>
